@@ -32,14 +32,13 @@
     </div>
 
     <div id="mobile-overlay" onclick="app.toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden md:hidden transition-opacity"></div>
-    <div id="toast-container" class="fixed top-5 right-5 z-[80] space-y-2 pointer-events-none w-auto max-w-xs"></div>
 
     <div id="view-auth" class="fixed inset-0 bg-slate-900 z-[60] flex items-center justify-center fade-in p-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-purple-600"></div>
             <div class="text-center mb-8">
                 <img src="logo.png" alt="D2 Group" class="logo-login">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v15</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v16</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-5">
                 <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com"></div>
@@ -63,10 +62,14 @@
             <nav class="flex-1 py-6 space-y-1 px-3 overflow-y-auto">
                 <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-chart-pie w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuDash">Dashboard</span></button>
                 <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-clipboard-check w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span></button>
+                
+                <button onclick="app.openSupportModal()" id="nav-support" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group hidden"><i class="fas fa-headset w-6 text-center group-hover:text-yellow-400"></i> <span class="font-medium text-sm" data-key="menuSupport">Support</span></button>
+
                 <div id="admin-menu" class="hidden">
                     <div class="mt-8 mb-2 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-wider" data-key="menuMgmt">Management</div>
                     <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-users w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuTeam">Team & HR</span></button>
                     <button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-address-book w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuClients">Clients CRM</span></button>
+                    <button onclick="app.openSettingsModal()" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group mt-2 text-slate-400"><i class="fas fa-cog w-6 text-center group-hover:text-white"></i> <span class="font-medium text-sm" data-key="menuSettings">Settings</span></button>
                 </div>
             </nav>
             <div class="p-4 border-t border-slate-800 bg-slate-950">
@@ -100,7 +103,6 @@
             </div>
             <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-6 space-y-5 bg-gray-50 overflow-y-auto">
                 <input type="hidden" id="ticket-id">
-                
                 <div id="field-client-details" class="hidden space-y-3 bg-blue-50 p-4 rounded-xl border border-blue-100">
                     <p class="text-xs font-bold text-blue-800 uppercase" data-key="contactDetails">Contact Details</p>
                     <div class="grid grid-cols-1 gap-3">
@@ -111,7 +113,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="dept">Dept</label><select id="ticket-dept" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div>
                     <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="Normal">Normal</option><option value="Urgent">🚨 Urgent</option></select></div>
@@ -131,11 +132,50 @@
             <form onsubmit="event.preventDefault(); app.saveUser();" class="p-6 space-y-4 bg-gray-50 overflow-y-auto">
                 <input type="hidden" id="user-id">
                 <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-2 border rounded text-sm"></div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="role">Role</label><select id="new-user-role" class="w-full p-2 border rounded text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Admin / CEO</option></select></div>
+                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="role">Role</label><select id="new-user-role" class="w-full p-2 border rounded text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div>
                 <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-2 border rounded text-sm"></div>
                 <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-2 border rounded bg-gray-100 text-sm"></div>
                 <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded hover:bg-green-700 text-sm" data-key="saveBtn">Save Data</button>
             </form>
+        </div>
+    </div>
+
+    <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden">
+            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800">
+                <h3 class="text-white font-bold"><i class="fas fa-cog mr-2"></i> System Settings</h3>
+                <button onclick="app.closeModal('settings')" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-4">
+                <p class="text-xs text-gray-500 mb-2">Configure support numbers for your clients.</p>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-green-600 mb-1"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label>
+                    <input type="text" id="setting-whatsapp" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15550199">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-blue-600 mb-1"><i class="fas fa-phone mr-1"></i> Support Phone</label>
+                    <input type="text" id="setting-phone" class="w-full p-2 border rounded text-sm" placeholder="e.g. +1 555-0199">
+                </div>
+                <button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded hover:bg-slate-700 text-sm">Save Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-support" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4">
+        <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-sm overflow-hidden pb-6">
+            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800">
+                <h3 class="text-white font-bold"><i class="fas fa-headset mr-2"></i> Support Center</h3>
+                <button onclick="app.closeModal('support')" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 space-y-4 text-center">
+                <p class="text-sm text-gray-600 mb-4">How would you like to contact us?</p>
+                <a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-md hover:bg-green-600 transition flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp
+                </a>
+                <a id="btn-phone" href="#" class="block w-full bg-blue-500 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-phone-alt text-2xl"></i> Call Support
+                </a>
+            </div>
         </div>
     </div>
 
@@ -160,22 +200,22 @@
         // ============================================
         const i18n = {
             en: { 
-                portalTitle: "Enterprise Portal v15", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
+                portalTitle: "Enterprise Portal v16", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
                 statusOpen: "Open", statusCompleted: "Completed"
             },
             pt: { 
-                portalTitle: "Portal Corporativo v15", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
+                portalTitle: "Portal Corporativo v16", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Suporte", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
                 statusOpen: "Aberto", statusCompleted: "Concluído"
             },
             es: { 
-                portalTitle: "Portal Empresarial v15", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
+                portalTitle: "Portal Empresarial v16", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Soporte", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
                 statusOpen: "Abierto", statusCompleted: "Completado"
             }
         };
 
         const app = {
             lang: 'en',
-            data: { users: [], tickets: [], currentUser: null },
+            data: { users: [], tickets: [], settings: { whatsapp: '', phone: '' }, currentUser: null },
             sidebarOpen: false,
 
             init: async function() {
@@ -210,6 +250,7 @@
                         const cloudData = doc.data();
                         this.data.users = cloudData.users || [];
                         this.data.tickets = cloudData.tickets || [];
+                        this.data.settings = cloudData.settings || { whatsapp: '', phone: '' };
                     }
                 } catch (error) { console.warn("Offline/Config Error:", error); }
                 document.getElementById('loading-overlay').classList.add('hidden');
@@ -220,6 +261,7 @@
                     await db.collection('app_data').doc('company_state').set({
                         users: this.data.users,
                         tickets: this.data.tickets,
+                        settings: this.data.settings,
                         lastUpdate: new Date().toISOString()
                     });
                 } catch (e) { console.error("Save Error", e); }
@@ -237,11 +279,7 @@
                     const key = el.getAttribute('data-key');
                     if(i18n[this.lang][key]) el.innerText = i18n[this.lang][key];
                 });
-                
-                // Update placeholders explicitly
-                if(document.getElementById('ticket-client-manual')) {
-                    document.getElementById('ticket-client-manual').placeholder = i18n[this.lang].clientName;
-                }
+                if(document.getElementById('ticket-client-manual')) document.getElementById('ticket-client-manual').placeholder = i18n[this.lang].clientName;
             },
             t: function(key) { return i18n[this.lang][key] || key; },
 
@@ -263,7 +301,15 @@
                 const user = this.data.currentUser;
                 document.getElementById('user-display-name').innerText = user.name;
                 document.getElementById('user-display-role').innerText = this.getRoleLabel(user.role);
-                if (user.role === 'admin') document.getElementById('admin-menu').classList.remove('hidden');
+                
+                // Show menus based on role
+                if (user.role === 'admin') {
+                    document.getElementById('admin-menu').classList.remove('hidden');
+                }
+                if (user.role === 'client') {
+                    document.getElementById('nav-support').classList.remove('hidden');
+                }
+
                 this.router('dashboard');
                 this.updateBadge();
             },
@@ -302,43 +348,44 @@
                     const displayStatus = this.getStatusLabel(t.status);
                     const phoneLink = t.clientPhone ? `<a href="tel:${t.clientPhone}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-phone-alt"></i></a>` : '';
                     const emailLink = t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-envelope"></i></a>` : '';
-                    
-                    html += `
-                    <div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4">
-                        <div class="flex gap-3 md:gap-4">
-                            <div class="flex flex-col gap-2 mb-1 md:mb-0">
-                                <span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>
-                                ${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-sm md:text-base">${t.desc}</h4>
-                                <div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 items-center">
-                                    <span class="font-bold text-slate-700">${t.clientName}</span>
-                                    ${phoneLink} ${emailLink}
-                                    <span class="opacity-50">• ${t.date}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0">
-                            <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span>
-                            <div class="flex gap-2">
-                                <button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>
-                                ${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}
-                                ${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}
-                            </div>
-                        </div>
-                    </div>`;
+                    html += `<div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4"><div class="flex gap-3 md:gap-4"><div class="flex flex-col gap-2 mb-1 md:mb-0"><span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}</div><div><h4 class="font-bold text-sm md:text-base">${t.desc}</h4><div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 items-center"><span class="font-bold text-slate-700">${t.clientName}</span>${phoneLink} ${emailLink}<span class="opacity-50">• ${t.date}</span></div></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0"><span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div></div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
             renderUserList: function(c, type) {
                 const list = this.data.users.filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
                 let html = `<div class="flex justify-between items-center mb-6"><h2 class="font-bold text-lg text-slate-700" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-slate-700 transition"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">`;
-                list.forEach(u => html += `<div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border relative group flex items-center gap-4"><div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-lg text-slate-600 border border-slate-200 shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 text-sm truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-gray-400 mt-0.5 truncate">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-500 font-mono truncate mt-1">${u.email}</p></div><div class="absolute top-2 right-2 flex gap-2 md:opacity-0 group-hover:opacity-100 transition"><button onclick="app.editUser(${u.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${u.id !== 1 ? `<button onclick="app.deleteUser(${u.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div>`);
+                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border relative group flex items-center gap-4 transition"><div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-lg text-slate-600 border border-slate-200 shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 text-sm truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-gray-400 mt-0.5 truncate">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-500 font-mono truncate mt-1">${u.email}</p></div><div class="absolute top-2 right-2 flex gap-2 md:opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button></div></div>`);
                 c.innerHTML = html + `</div>`;
             },
 
-            // ACTIONS
+            // ACTIONS & SETTINGS
+            openSettingsModal: function() {
+                document.getElementById('modal-settings').classList.remove('hidden');
+                document.getElementById('setting-whatsapp').value = this.data.settings.whatsapp || '';
+                document.getElementById('setting-phone').value = this.data.settings.phone || '';
+            },
+            saveSettings: function() {
+                this.data.settings.whatsapp = document.getElementById('setting-whatsapp').value;
+                this.data.settings.phone = document.getElementById('setting-phone').value;
+                this.saveToCloud();
+                this.closeModal('settings');
+                alert('Settings saved!');
+            },
+            openSupportModal: function() {
+                document.getElementById('modal-support').classList.remove('hidden');
+                const wa = this.data.settings.whatsapp || '';
+                const ph = this.data.settings.phone || '';
+                document.getElementById('btn-whatsapp').href = wa ? `https://wa.me/${wa}` : '#';
+                document.getElementById('btn-phone').href = ph ? `tel:${ph}` : '#';
+                
+                if(!wa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none');
+                else document.getElementById('btn-whatsapp').classList.remove('opacity-50', 'pointer-events-none');
+                
+                if(!ph) document.getElementById('btn-phone').classList.add('opacity-50', 'pointer-events-none');
+                else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none');
+            },
+
             saveTicket: function() {
                 const id = document.getElementById('ticket-id').value;
                 const dept = document.getElementById('ticket-dept').value;
@@ -347,28 +394,17 @@
                 const manualName = document.getElementById('ticket-client-manual').value;
                 const manualPhone = document.getElementById('ticket-client-phone').value;
                 const manualEmail = document.getElementById('ticket-client-email').value;
-
-                let cName = this.data.currentUser.name; 
-                let cEmail = this.data.currentUser.email;
-                let cPhone = "";
-
+                let cName = this.data.currentUser.name; let cEmail = this.data.currentUser.email; let cPhone = "";
                 if (this.data.currentUser.role !== 'client') {
                     if (!manualName && !id) { alert("Client Name Required"); return; }
-                    cName = manualName;
-                    cEmail = manualEmail || "manual@entry";
-                    cPhone = manualPhone || "";
+                    cName = manualName; cEmail = manualEmail || "manual@entry"; cPhone = manualPhone || "";
                 }
-                
                 if(id) { 
-                    const t = this.data.tickets.find(x => x.id == id); 
-                    t.dept = dept; t.desc = desc; t.priority = priority; 
+                    const t = this.data.tickets.find(x => x.id == id); t.dept = dept; t.desc = desc; t.priority = priority; 
                     if(manualName) { t.clientName = manualName; t.clientEmail = cEmail; t.clientPhone = cPhone; }
-                } else { 
-                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); 
-                }
+                } else { this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
-            
             closeTicket: function(id) { const t = this.data.tickets.find(x => x.id === id); if(t) { t.status = "Completed"; this.saveToCloud(); this.router('tickets'); } },
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
             editTicket: function(id) { app.openTicketModal(id); }, 
@@ -376,20 +412,8 @@
                 document.getElementById('modal-ticket').classList.remove('hidden'); document.getElementById('ticket-id').value = id||'';
                 const field = document.getElementById('field-client-details');
                 if (this.data.currentUser.role !== 'client') field.classList.remove('hidden'); else field.classList.add('hidden');
-                if(id){ 
-                    const t = this.data.tickets.find(x=>x.id==id); 
-                    document.getElementById('ticket-desc').value=t.desc; 
-                    document.getElementById('ticket-client-manual').value=t.clientName;
-                    document.getElementById('ticket-client-phone').value=t.clientPhone || '';
-                    document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail;
-                    document.getElementById('ticket-dept').value=t.dept; 
-                    document.getElementById('ticket-priority').value=t.priority; 
-                } else { 
-                    document.getElementById('ticket-desc').value = ''; 
-                    document.getElementById('ticket-client-manual').value = ''; 
-                    document.getElementById('ticket-client-phone').value = ''; 
-                    document.getElementById('ticket-client-email').value = ''; 
-                }
+                if(id){ const t = this.data.tickets.find(x=>x.id==id); document.getElementById('ticket-desc').value=t.desc; document.getElementById('ticket-client-manual').value=t.clientName; document.getElementById('ticket-client-phone').value=t.clientPhone || ''; document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail; document.getElementById('ticket-dept').value=t.dept; document.getElementById('ticket-priority').value=t.priority; } 
+                else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; document.getElementById('ticket-client-phone').value = ''; document.getElementById('ticket-client-email').value = ''; }
             },
             saveUser: function() {
                 const id = document.getElementById('user-id').value;
@@ -405,11 +429,8 @@
             },
             
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
-            getRoleLabel: function(r) { return r === 'admin' ? 'CEO / Admin' : r; },
-            updateBadge: function() { 
-                const c = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length; 
-                document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); 
-            }
+            getRoleLabel: function(r) { return r === 'admin' ? 'Administrator' : r; },
+            updateBadge: function() { const c = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
         };
         app.init();
     </script>
