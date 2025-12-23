@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2 Group Nexus | Control Center</title>
+    <title>D2 Group Nexus | Multi-Company</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,17 +17,10 @@
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* APPLE STYLE CARDS */
-        .apple-card {
-            background: white;
-            border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
+        .apple-card { background: white; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
         
-        /* DARK PILL STRATEGY (Logos) */
-        .brand-pill-dark {
-            background-color: #0f172a; padding: 15px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
+        /* BRANDING */
+        .brand-pill-dark { background-color: #0f172a; padding: 15px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
         .logo-main { height: 55px; object-fit: contain; display: block; }
         .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
         .logo-header-mobile { height: 32px; object-fit: contain; display: block; }
@@ -36,15 +29,10 @@
 
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
-        
-        /* Security Blur for Passwords */
         .secure-blur { filter: blur(4px); transition: filter 0.3s; cursor: pointer; user-select: none; }
         .secure-blur:hover, .secure-blur:active { filter: blur(0); }
-
-        .custom-select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; appearance: none;
-        }
+        
+        input:disabled, select:disabled { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; border-color: #e5e7eb; }
     </style>
 </head>
 <body class="text-slate-800 antialiased h-screen flex overflow-hidden">
@@ -59,9 +47,7 @@
     <div id="view-auth" class="fixed inset-0 bg-[#F2F2F7] z-[60] flex items-center justify-center fade-in p-6">
         <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col">
             <div class="text-center mb-10 flex-grow">
-                <div class="brand-pill-dark mb-8">
-                    <img src="logo.png" alt="D2 Group" class="logo-main">
-                </div>
+                <div class="brand-pill-dark mb-8"><img src="logo.png" alt="D2 Group" class="logo-main"></div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-key="portalTitle">Enterprise Portal</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-6 mb-10">
@@ -85,7 +71,7 @@
             <div class="p-8 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-[0.03] min-h-[150px] relative">
                  <button onclick="app.toggleSidebar()" class="absolute top-4 right-4 md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
                 <img src="logo.png" class="logo-sidebar">
-                <span id="env-badge" class="text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-slate-700">System Loading...</span>
+                <span id="env-badge" class="text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-slate-700">Loading...</span>
                 <div class="flex gap-4">
                     <button onclick="app.setLang('en')" class="hover:scale-110 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg" id="flag-en" class="flag-icon flag-active"></button>
                     <button onclick="app.setLang('pt')" class="hover:scale-110 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/br.svg" id="flag-pt" class="flag-icon"></button>
@@ -95,8 +81,15 @@
             <nav class="flex-1 py-6 space-y-2 px-4 overflow-y-auto">
                 <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-chart-pie w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuDash">Dashboard</span></button>
                 <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-clipboard-check w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-lg shadow-blue-500/50">0</span></button>
+                
                 <div id="menu-client" class="hidden"><div class="my-4 border-t border-slate-800"></div><button onclick="app.openSupportModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl bg-gradient-to-r from-blue-900 to-slate-900 border border-blue-900/50 hover:border-blue-500 transition group font-bold text-white shadow-lg"><i class="fas fa-headset w-8 text-center text-yellow-400 animate-pulse"></i> <span data-key="menuSupport">Support Center</span></button></div>
-                <div id="menu-admin" class="hidden"><div class="mt-8 mb-3 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-widest" data-key="menuMgmt">Management</div><button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-users w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuTeam">Team & HR</span></button><button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-address-book w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuClients">Clients CRM</span></button><button onclick="app.openSettingsModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group mt-2 text-slate-400 font-medium text-sm"><i class="fas fa-cog w-8 text-center group-hover:text-white transition"></i> <span data-key="menuSettings">Settings</span></button></div>
+                
+                <div id="menu-admin" class="hidden">
+                    <div class="mt-8 mb-3 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-widest" data-key="menuMgmt">Management</div>
+                    <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-users w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuTeam">Team & HR</span></button>
+                    <button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-address-book w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuClients">Clients CRM</span></button>
+                    <button onclick="app.openSettingsModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group mt-2 text-slate-400 font-medium text-sm"><i class="fas fa-cog w-8 text-center group-hover:text-white transition"></i> <span data-key="menuSettings">Settings</span></button>
+                </div>
             </nav>
             <div class="p-6 border-t border-slate-800 bg-slate-950"><button onclick="app.logout()" class="w-full flex items-center justify-center px-4 py-3 text-red-400 hover:text-white hover:bg-red-600/20 rounded-xl transition text-xs font-bold uppercase tracking-wide"><i class="fas fa-power-off mr-2"></i> <span data-key="logout">Logout</span></button></div>
         </aside>
@@ -109,7 +102,7 @@
                     <div class="md:hidden brand-pill-dark py-2 px-4 rounded-xl shadow-sm"><img src="logo.png" class="logo-header-mobile"></div>
                 </div>
                 <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-100 p-2 rounded-full transition border border-transparent hover:border-gray-200" onclick="app.editUser(app.data.currentUser.id)">
-                    <div class="text-right leading-tight hidden sm:block mr-2"><p id="user-display-name" class="text-sm font-bold text-slate-900">User</p><p id="user-display-role" class="text-[10px] text-blue-600 font-bold uppercase tracking-wide">Role</p></div>
+                    <div class="text-right leading-tight hidden sm:block mr-2"><p id="user-display-name" class="text-sm font-bold text-slate-900">User</p><p id="user-display-company" class="text-[10px] text-gray-500 font-bold uppercase tracking-wide">Company</p></div>
                     <div class="h-10 w-10 bg-slate-900 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-gray-100"><i class="fas fa-user-tie"></i></div>
                 </div>
             </header>
@@ -127,44 +120,30 @@
     <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col apple-card">
             <div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
-                <h3 class="text-slate-800 font-bold text-xl">Client Profile</h3>
+                <h3 class="text-slate-800 font-bold text-xl">Profile Management</h3>
                 <button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
-            
             <div class="overflow-y-auto flex-1">
+                <div id="user-ro-warning" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 m-6 mb-0">
+                    <div class="flex">
+                        <div class="flex-shrink-0"><i class="fas fa-lock text-yellow-400"></i></div>
+                        <div class="ml-3"><p class="text-sm text-yellow-700 font-bold">Read-Only Mode</p><p class="text-xs text-yellow-600">Contact Admin to edit profile details.</p></div>
+                    </div>
+                </div>
                 <form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50">
                     <input type="hidden" id="user-id">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2">Company / Organization</label><input type="text" id="new-user-company" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm" placeholder="e.g. Hotel Plaza"></div>
+                        <div id="field-role-container"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Company Admin</option><option value="super_admin" id="opt-super-admin" class="hidden">Super Admin (General)</option></select></div>
                         <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div>
+                        <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div>
                     </div>
-                    <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition" data-key="saveBtn">Save Profile Data</button>
+                    <button type="submit" id="btn-save-profile" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition" data-key="saveBtn">Save Profile Data</button>
                 </form>
-
                 <div id="client-vault-section" class="px-8 pb-8 bg-white border-t border-gray-100 hidden">
-                    <div class="pt-6 mb-4 flex justify-between items-center">
-                        <h4 class="text-lg font-bold text-slate-800"><i class="fas fa-vault text-blue-500 mr-2"></i> Client Vault & History</h4>
-                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded font-bold">Admin Only</span>
-                    </div>
-                    
-                    <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100">
-                        <textarea id="vault-input" class="w-full bg-white border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 mb-3" placeholder="Add note, password, or device info..." rows="2"></textarea>
-                        <div class="flex justify-between items-center">
-                            <div class="flex gap-2">
-                                <button type="button" onclick="app.setNoteType('general')" class="px-3 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-600 hover:bg-gray-300">📝 General</button>
-                                <button type="button" onclick="app.setNoteType('password')" class="px-3 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200">🔐 Password</button>
-                                <button type="button" onclick="app.setNoteType('device')" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-600 hover:bg-blue-200">📱 Device</button>
-                                <button type="button" onclick="app.setNoteType('network')" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-600 hover:bg-purple-200">🛜 Network</button>
-                            </div>
-                            <button onclick="app.addClientNote()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Save Entry</button>
-                        </div>
-                        <input type="hidden" id="vault-type" value="general">
-                    </div>
-
-                    <div id="vault-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
-                        </div>
+                    <div class="pt-6 mb-4 flex justify-between items-center"><h4 class="text-lg font-bold text-slate-800"><i class="fas fa-vault text-blue-500 mr-2"></i> Client Vault</h4><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Active</span></div>
+                    <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100"><textarea id="vault-input" class="w-full bg-white border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 mb-3" placeholder="Add note, password, or device info..." rows="2"></textarea><div class="flex justify-between items-center"><div class="flex gap-2"><button type="button" onclick="app.setNoteType('general')" class="px-3 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-600 hover:bg-gray-300">📝 General</button><button type="button" onclick="app.setNoteType('password')" class="px-3 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200">🔐 Password</button><button type="button" onclick="app.setNoteType('device')" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-600 hover:bg-blue-200">📱 Device</button><button type="button" onclick="app.setNoteType('network')" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-600 hover:bg-purple-200">🛜 Network</button></div><button onclick="app.addClientNote()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Save Entry</button></div><input type="hidden" id="vault-type" value="general"></div><div id="vault-list" class="space-y-3 max-h-60 overflow-y-auto pr-2"></div>
                 </div>
             </div>
         </div>
@@ -209,7 +188,7 @@
             init: async function() {
                 await this.syncFromCloud();
                 if (this.data.users.length === 0) {
-                    this.data.users = [{ id: 1, name: "Dante Frota", email: "dante.frota@allcablingtech.com", pass: "Newlife2022", role: "admin" }];
+                    this.data.users = [{ id: 1, name: "Dante Frota", email: "dante.frota@allcablingtech.com", pass: "Newlife2022", role: "super_admin", company: "D2 Group" }];
                     this.saveToCloud();
                 }
                 const sessionUser = sessionStorage.getItem('d2_session');
@@ -288,14 +267,18 @@
                 document.getElementById('view-main').classList.remove('hidden');
                 const user = this.data.currentUser;
                 document.getElementById('user-display-name').innerText = user.name;
-                document.getElementById('user-display-role').innerText = this.getRoleLabel(user.role);
+                document.getElementById('user-display-company').innerText = user.company || 'Unknown';
                 
                 document.getElementById('menu-admin').classList.add('hidden');
                 document.getElementById('menu-client').classList.add('hidden');
                 
-                if (user.role === 'admin') {
+                if (user.role === 'super_admin') {
                     document.getElementById('menu-admin').classList.remove('hidden');
-                    document.getElementById('env-badge').innerText = 'ADMIN CONSOLE';
+                    document.getElementById('env-badge').innerText = 'SUPER ADMIN';
+                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-purple-400 mb-4 border border-purple-900/30';
+                } else if (user.role === 'admin') {
+                    document.getElementById('menu-admin').classList.remove('hidden');
+                    document.getElementById('env-badge').innerText = 'COMPANY ADMIN';
                     document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-green-400 mb-4 border border-green-900/30';
                 } else if (user.role === 'client') {
                     document.getElementById('menu-client').classList.remove('hidden');
@@ -303,6 +286,7 @@
                     document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-blue-900/30';
                 } else {
                     document.getElementById('env-badge').innerText = 'TECH PANEL';
+                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-orange-400 mb-4 border border-orange-900/30';
                 }
 
                 this.router('dashboard');
@@ -334,15 +318,31 @@
                 return status;
             },
 
+            // --- MULTI-COMPANY FILTERING LOGIC ---
+            filterByCompany: function(list) {
+                const user = this.data.currentUser;
+                if (user.role === 'super_admin') return list; // Super Admin sees all
+                return list.filter(item => item.company === user.company); // Others see only their company
+            },
+
             renderDashboard: function(c) {
-                 const active = this.data.tickets.filter(t => t.status !== 'Completed').length;
-                 const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && t.status !== 'Completed').length;
+                 // Filter tickets by company first
+                 const myTickets = this.filterByCompany(this.data.tickets);
+                 
+                 const active = myTickets.filter(t => t.status !== 'Completed').length;
+                 const urgent = myTickets.filter(t => t.priority === 'Urgent' && t.status !== 'Completed').length;
                  c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm transition hover:scale-105"><img src="logo-hvac.png" class="logo-sub-small" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
             
             renderTickets: function(c) {
-                let list = this.data.tickets;
-                if(this.data.currentUser.role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
+                // Apply strict filtering
+                let list = this.filterByCompany(this.data.tickets);
+                const role = this.data.currentUser.role;
+                
+                // DEPT/ROLE Filtering
+                if(role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
+                else if(role === 'hvac_tech') list = list.filter(t => t.dept === 'HVAC');
+                else if(role === 'smart_tech') list = list.filter(t => t.dept === 'SMART');
                 
                 let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-6">`;
                 
@@ -355,21 +355,23 @@
                         commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}</div>`;
                     }
                     let adminControls = '';
-                    if (this.data.currentUser.role === 'admin') {
+                    if (role === 'admin' || role === 'super_admin') {
                         let techOptions = `<option value="">-- Assign Tech --</option>`;
-                        this.data.users.filter(u => u.role.includes('tech')).forEach(u => { techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`; });
+                        // Only show techs from THIS company
+                        this.filterByCompany(this.data.users).filter(u => u.role.includes('tech')).forEach(u => { techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`; });
                         adminControls = `<div class="mt-4 grid grid-cols-2 gap-3"><div><label class="text-[10px] font-bold text-gray-400 uppercase">Status</label><select onchange="app.updateTicketStatus(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer"><option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option><option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option><option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Parts Pending</option><option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option></select></div><div><label class="text-[10px] font-bold text-gray-400 uppercase">Technician</label><select onchange="app.updateTicketTech(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">${techOptions}</select></div></div>`;
                     } else { if (t.assignedTech) { adminControls = `<div class="mt-3 text-xs text-blue-600 font-bold bg-blue-50 px-3 py-2 rounded-lg inline-block"><i class="fas fa-tools mr-1"></i> Tech Assigned: ${t.assignedTech}</div>`; } }
 
-                    html += `<div class="apple-card p-6 relative group hover:shadow-lg transition"><div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}<span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span></div><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}</div></div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 font-medium mb-2"><i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}</div>${adminControls}${commBar}</div>`;
+                    html += `<div class="apple-card p-6 relative group hover:shadow-lg transition"><div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}<span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span></div><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>${role === 'admin' || role === 'super_admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}</div></div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 font-medium mb-2"><i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}</div>${adminControls}${commBar}</div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
 
             renderUserList: function(c, type) {
-                const list = this.data.users.filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
+                // STRICT COMPANY FILTERING
+                const list = this.filterByCompany(this.data.users).filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
                 let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-800 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`;
-                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="apple-card p-6 relative group flex items-center gap-5 hover:-translate-y-1 transition"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-xl text-slate-600 border border-white shadow-sm shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-blue-500 mt-0.5 truncate tracking-wide">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-400 font-medium truncate mt-1">${u.email}</p></div><div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition shadow-sm"><i class="fas fa-trash text-xs"></i></button></div></div>`);
+                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="apple-card p-6 relative group flex items-center gap-5 hover:-translate-y-1 transition"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-xl text-slate-600 border border-white shadow-sm shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-blue-500 mt-0.5 truncate tracking-wide">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-400 font-medium truncate mt-1">${u.email}</p><p class="text-[9px] text-gray-300 font-bold uppercase mt-1 tracking-wider">${u.company || 'No Company'}</p></div><div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition shadow-sm"><i class="fas fa-trash text-xs"></i></button></div></div>`);
                 c.innerHTML = html + `</div>`;
             },
 
@@ -407,15 +409,24 @@
                 const manualName = document.getElementById('ticket-client-manual').value;
                 const manualPhone = document.getElementById('ticket-client-phone').value;
                 const manualEmail = document.getElementById('ticket-client-email').value;
-                let cName = this.data.currentUser.name; let cEmail = this.data.currentUser.email; let cPhone = "";
+                let cName = this.data.currentUser.name; 
+                let cEmail = this.data.currentUser.email; 
+                let cPhone = "";
+                
+                // Inherit Company from Creator
+                let cCompany = this.data.currentUser.company;
+
                 if (this.data.currentUser.role !== 'client') {
                     if (!manualName && !id) { alert("Client Name Required"); return; }
                     cName = manualName; cEmail = manualEmail || "manual@entry"; cPhone = manualPhone || "";
                 }
+                
                 if(id) { 
                     const t = this.data.tickets.find(x => x.id == id); t.dept = dept; t.desc = desc; t.priority = priority; 
                     if(manualName) { t.clientName = manualName; t.clientEmail = cEmail; t.clientPhone = cPhone; }
-                } else { this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); }
+                } else { 
+                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR'), company: cCompany }); 
+                }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
             updateTicketStatus: function(id, newStatus) { const t = this.data.tickets.find(x => x.id == id); if(t) { t.status = newStatus; this.saveToCloud(); this.router('tickets'); } },
@@ -430,21 +441,20 @@
                 else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; document.getElementById('ticket-client-phone').value = ''; document.getElementById('ticket-client-email').value = ''; }
             },
             
-            // --- NEW: USER MANAGEMENT WITH VAULT ---
             saveUser: function() {
                 const id = document.getElementById('user-id').value;
                 const uData = {
                     id: id ? parseInt(id) : Date.now(),
                     name: document.getElementById('new-user-name').value,
                     role: document.getElementById('new-user-role').value,
+                    company: document.getElementById('new-user-company').value, // Save Company
                     email: document.getElementById('new-user-email').value,
                     pass: document.getElementById('new-user-pass').value
                 };
                 
-                // Preserve notes if editing
                 if(id) { 
                     const idx = this.data.users.findIndex(x => x.id == id);
-                    if(this.data.users[idx].notes) uData.notes = this.data.users[idx].notes; // Keep existing notes
+                    if(this.data.users[idx].notes) uData.notes = this.data.users[idx].notes; 
                     this.data.users[idx] = uData; 
                 } else { 
                     this.data.users.push(uData); 
@@ -463,10 +473,46 @@
                 document.getElementById('new-user-email').value = u.email; 
                 document.getElementById('new-user-pass').value = u.pass; 
                 document.getElementById('new-user-role').value = u.role;
+                document.getElementById('new-user-company').value = u.company || '';
                 
-                // Toggle Vault Visibility (Only for Admins viewing Clients)
+                // SECURITY: ROLE & COMPANY MANAGEMENT
+                const loggedRole = this.data.currentUser.role;
+                const isSuperAdmin = loggedRole === 'super_admin';
+                const isCompanyAdmin = loggedRole === 'admin';
+                const isSelf = id == this.data.currentUser.id;
+
+                // Who can edit? Only Admins (Super or Company)
+                const canEdit = isSuperAdmin || isCompanyAdmin;
+                
+                document.getElementById('new-user-name').disabled = !canEdit;
+                document.getElementById('new-user-email').disabled = !canEdit;
+                document.getElementById('new-user-pass').disabled = !canEdit;
+                document.getElementById('new-user-role').disabled = !canEdit;
+                
+                // Only Super Admin can change Company Name
+                document.getElementById('new-user-company').disabled = !isSuperAdmin;
+                
+                // Show/Hide Super Admin Option based on who is logged in
+                if(isSuperAdmin) {
+                    document.getElementById('opt-super-admin').classList.remove('hidden');
+                } else {
+                    document.getElementById('opt-super-admin').classList.add('hidden');
+                    // If creating new, auto-fill company for normal admins
+                    if(!id) document.getElementById('new-user-company').value = this.data.currentUser.company;
+                }
+
+                if(!canEdit) {
+                    document.getElementById('user-ro-warning').classList.remove('hidden');
+                    document.getElementById('btn-save-profile').classList.add('hidden'); 
+                    document.getElementById('field-role-container').classList.add('hidden');
+                } else {
+                    document.getElementById('user-ro-warning').classList.add('hidden');
+                    document.getElementById('btn-save-profile').classList.remove('hidden');
+                    document.getElementById('field-role-container').classList.remove('hidden');
+                }
+
                 const vaultSection = document.getElementById('client-vault-section');
-                if (this.data.currentUser.role === 'admin' && u.role === 'client') {
+                if ((canEdit || this.data.currentUser.role.includes('tech')) && u.role === 'client') {
                     vaultSection.classList.remove('hidden');
                     this.renderClientNotes(u.id);
                 } else {
@@ -476,89 +522,58 @@
                 document.getElementById('modal-user').classList.remove('hidden');
             },
 
-            // --- CLIENT VAULT LOGIC ---
+            // VAULT (Same as before)
             setNoteType: function(type) {
                 document.getElementById('vault-type').value = type;
                 const input = document.getElementById('vault-input');
-                // Visual feedback
                 if(type === 'password') input.placeholder = "Enter password or secure credential...";
                 else if(type === 'device') input.placeholder = "Enter device name and location...";
                 else if(type === 'network') input.placeholder = "Enter Wi-Fi SSID and Password...";
                 else input.placeholder = "Enter note...";
             },
-
             addClientNote: function() {
                 const userId = document.getElementById('user-id').value;
                 const text = document.getElementById('vault-input').value.trim();
                 const type = document.getElementById('vault-type').value;
                 if(!text) return;
-
                 const userIndex = this.data.users.findIndex(u => u.id == userId);
                 if(userIndex > -1) {
                     if(!this.data.users[userIndex].notes) this.data.users[userIndex].notes = [];
-                    
-                    this.data.users[userIndex].notes.unshift({
-                        id: Date.now(),
-                        date: new Date().toLocaleString(),
-                        text: text,
-                        type: type,
-                        author: this.data.currentUser.name
-                    });
-                    
-                    this.saveToCloud();
-                    document.getElementById('vault-input').value = '';
-                    this.renderClientNotes(userId);
+                    this.data.users[userIndex].notes.unshift({ id: Date.now(), date: new Date().toLocaleString(), text: text, type: type, author: this.data.currentUser.name });
+                    this.saveToCloud(); document.getElementById('vault-input').value = ''; this.renderClientNotes(userId);
                 }
             },
-
             renderClientNotes: function(userId) {
                 const u = this.data.users.find(x => x.id == userId);
                 const list = document.getElementById('vault-list');
                 list.innerHTML = '';
-                
-                if(!u.notes || u.notes.length === 0) {
-                    list.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No history recorded.</p>';
-                    return;
-                }
-
+                if(!u.notes || u.notes.length === 0) { list.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No history recorded.</p>'; return; }
                 u.notes.forEach(note => {
-                    let icon = '📝';
-                    let bgClass = 'bg-gray-50 border-gray-200';
-                    let textClass = 'text-gray-700';
-                    
+                    let icon = '📝'; let bgClass = 'bg-gray-50 border-gray-200'; let textClass = 'text-gray-700';
                     if(note.type === 'password') { icon = '🔐'; bgClass = 'bg-red-50 border-red-100'; textClass = 'text-red-800 font-mono secure-blur'; }
                     if(note.type === 'device') { icon = '📱'; bgClass = 'bg-blue-50 border-blue-100'; }
                     if(note.type === 'network') { icon = '🛜'; bgClass = 'bg-purple-50 border-purple-100'; }
-
-                    list.innerHTML += `
-                    <div class="p-3 rounded-lg border ${bgClass} flex gap-3 items-start">
-                        <div class="text-lg">${icon}</div>
-                        <div class="flex-1">
-                            <p class="text-xs text-gray-400 mb-1 flex justify-between">
-                                <span>${note.date}</span>
-                                <span class="font-bold">${note.author || 'Admin'}</span>
-                            </p>
-                            <p class="text-sm ${textClass}">${note.text}</p>
-                        </div>
-                        <button onclick="app.deleteNote(${userId}, ${note.id})" class="text-gray-300 hover:text-red-500"><i class="fas fa-times"></i></button>
-                    </div>`;
+                    const deleteBtn = (this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin') ? `<button onclick="app.deleteNote(${userId}, ${note.id})" class="text-gray-300 hover:text-red-500"><i class="fas fa-times"></i></button>` : '';
+                    list.innerHTML += `<div class="p-3 rounded-lg border ${bgClass} flex gap-3 items-start"><div class="text-lg">${icon}</div><div class="flex-1"><p class="text-xs text-gray-400 mb-1 flex justify-between"><span>${note.date}</span><span class="font-bold">${note.author || 'Admin'}</span></p><p class="text-sm ${textClass}">${note.text}</p></div>${deleteBtn}</div>`;
                 });
             },
-
             deleteNote: function(userId, noteId) {
                 if(confirm('Delete this entry?')) {
                     const idx = this.data.users.findIndex(u => u.id == userId);
                     this.data.users[idx].notes = this.data.users[idx].notes.filter(n => n.id !== noteId);
-                    this.saveToCloud();
-                    this.renderClientNotes(userId);
+                    this.saveToCloud(); this.renderClientNotes(userId);
                 }
             },
-
             deleteUser: function(id) { if(confirm(this.t('remove') + '?')) { this.data.users = this.data.users.filter(u => u.id !== id); this.saveToCloud(); this.router('team'); } },
-            
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
-            getRoleLabel: function(r) { return r === 'admin' ? 'Administrator' : r; },
-            updateBadge: function() { const c = this.data.tickets.filter(t => t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
+            getRoleLabel: function(r) { 
+                if(r === 'super_admin') return 'Super Admin';
+                if(r === 'admin') return 'Company Admin';
+                if(r === 'hvac_tech') return 'HVAC Tech';
+                if(r === 'smart_tech') return 'Smart Tech';
+                return 'Client';
+            },
+            updateBadge: function() { const c = this.filterByCompany(this.data.tickets).filter(t => t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
         };
         app.init();
     </script>
