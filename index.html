@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2 Group Nexus | System</title>
+    <title>D2 Group Nexus | Control Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,32 +20,38 @@
         /* APPLE STYLE CARDS */
         .apple-card {
             background: white;
-            border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer;
+            border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .apple-card:active { transform: scale(0.96); }
-
-        /* --- BRANDING & LOGOS (DARK PILL STRATEGY) --- */
-        /* Brand Pill Dark: Fundo ESCURO para contraste perfeito com dourado e branco */
+        
+        /* DARK PILL STRATEGY (Logos) */
         .brand-pill-dark {
-            background-color: #0f172a; /* Slate 900 (Preto/Azul Escuro) */
+            background-color: #0f172a; /* Slate 900 */
             padding: 15px 25px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         .logo-main { height: 55px; object-fit: contain; display: block; }
         .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
         .logo-header-mobile { height: 32px; object-fit: contain; display: block; }
-        
-        /* Subsidiary Logos */
-        .logo-sub-small { height: 32px; width: auto; object-fit: contain; }
         .logo-sub-login { height: 40px; width: auto; object-fit: contain; }
+        .logo-sub-small { height: 32px; width: auto; object-fit: contain; }
 
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
+        
+        /* Select Inputs Styling */
+        .custom-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            appearance: none;
+        }
     </style>
 </head>
 <body class="text-slate-800 antialiased h-screen flex overflow-hidden">
@@ -70,7 +76,6 @@
                 <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="••••••"></div>
                 <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide transform active:scale-95" data-key="loginBtn">ACCESS SYSTEM</button>
             </form>
-            
             <div class="text-center border-t border-gray-100 pt-8">
                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-wider">Powered By Subsidiaries</p>
                 <div class="brand-pill-dark inline-flex items-center gap-8 px-8 py-4 transition hover:scale-105">
@@ -130,9 +135,6 @@
     <div id="modal-support" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden pb-8 apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-lg">Support Center</h3><button onclick="app.closeModal('support')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><div class="p-8 space-y-4 text-center"><div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-500 text-2xl shadow-inner"><i class="fas fa-headset"></i></div><p class="text-sm text-gray-600 mb-6 font-medium">Need help? Choose a method below:</p><a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#20bd5a] transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp</a><a id="btn-phone" href="#" class="block w-full bg-white text-slate-700 border-2 border-slate-100 font-bold py-4 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fas fa-phone-alt text-xl text-slate-400"></i> Call Support</a></div></div></div>
 
     <script>
-        // ============================================
-        // FIREBASE CONFIG
-        // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
             authDomain: "d2-group-system.firebaseapp.com",
@@ -145,21 +147,18 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ============================================
-        // CORE LOGIC
-        // ============================================
         const i18n = {
             en: { 
                 portalTitle: "Enterprise Portal", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support Center", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Actions", actionSub: "Create new requests for HVAC or Smart Home services.", newTicket: "New Ticket", ticketHist: "History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
-                statusOpen: "Open", statusCompleted: "Completed"
+                statusOpen: "Open", statusInProgress: "In Progress", statusPending: "Parts Pending", statusCompleted: "Completed", assignTech: "Assign Tech"
             },
             pt: { 
                 portalTitle: "Portal Corporativo", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Central de Ajuda", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Ações", actionSub: "Crie novas solicitações para serviços HVAC ou Smart Home.", newTicket: "Novo Chamado", ticketHist: "Histórico", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
-                statusOpen: "Aberto", statusCompleted: "Concluído"
+                statusOpen: "Aberto", statusInProgress: "Em Andamento", statusPending: "Aguardando Peças", statusCompleted: "Concluído", assignTech: "Atribuir Técnico"
             },
             es: { 
                 portalTitle: "Portal Empresarial", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Centro de Ayuda", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Acciones", actionSub: "Cree nuevas solicitudes para servicios HVAC o Smart Home.", newTicket: "Nuevo Ticket", ticketHist: "Historial", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
-                statusOpen: "Abierto", statusCompleted: "Completado"
+                statusOpen: "Abierto", statusInProgress: "En Progreso", statusPending: "Piezas Pendientes", statusCompleted: "Completado", assignTech: "Asignar Técnico"
             }
         };
 
@@ -289,30 +288,103 @@
             },
             
             getStatusLabel: function(status) {
-                if (status === 'Aberto' || status === 'Open' || status === 'Abierto') return this.t('statusOpen');
-                if (status === 'Concluído' || status === 'Completed' || status === 'Completado') return this.t('statusCompleted');
-                return status;
+                if (status === 'Open') return this.t('statusOpen');
+                if (status === 'In Progress') return this.t('statusInProgress');
+                if (status === 'Pending') return this.t('statusPending');
+                if (status === 'Completed') return this.t('statusCompleted');
+                return status; // Fallback
             },
 
             renderDashboard: function(c) {
-                 const active = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length;
-                 const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && (t.status === 'Aberto' || t.status === 'Open')).length;
-                 // DASHBOARD ACTION CARD: Logos full color em fundo ESCURO (dark pill)
+                 const active = this.data.tickets.filter(t => t.status !== 'Completed').length;
+                 const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && t.status !== 'Completed').length;
                  c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm transition hover:scale-105"><img src="logo-hvac.png" class="logo-sub-small" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
+            
+            // --- UPDATED TICKET RENDERER WITH STATUS CONTROL & COMMUNICATION BUTTONS ---
             renderTickets: function(c) {
                 let list = this.data.tickets;
                 if(this.data.currentUser.role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
-                let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-5">`;
+                
+                let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-6">`;
+                
                 list.forEach(t => {
                     const isUrgent = t.priority === 'Urgent';
-                    const displayStatus = this.getStatusLabel(t.status);
-                    const phoneLink = t.clientPhone ? `<a href="tel:${t.clientPhone}" class="text-slate-400 hover:text-blue-600 ml-2 transition"><i class="fas fa-phone-alt"></i></a>` : '';
-                    const emailLink = t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="text-slate-400 hover:text-blue-600 ml-2 transition"><i class="fas fa-envelope"></i></a>` : '';
-                    html += `<div class="apple-card p-6 flex flex-col md:flex-row justify-between gap-6 hover:shadow-lg ${isUrgent?'border-l-4 border-red-500':''}"><div class="flex gap-5"><div class="hidden sm:flex w-12 h-12 rounded-2xl bg-gray-50 flex-shrink-0 items-center justify-center text-gray-400 text-xl"><i class="fas fa-ticket-alt"></i></div><div><div class="flex items-center gap-2 mb-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>':''}</div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 flex items-center font-medium"><i class="fas fa-user-circle mr-1.5 opacity-50"></i> ${t.clientName} ${phoneLink} ${emailLink} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1.5 opacity-50"></i> ${t.date}</div></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-gray-100"><span class="text-xs font-bold px-3 py-1.5 rounded-lg ${t.status === 'Completed' || t.status === 'Concluído' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'}">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="w-8 h-8 rounded-full bg-gray-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition flex items-center justify-center" title="Complete"><i class="fas fa-check text-xs"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>` : ''}</div></div></div>`;
+                    const displayStatus = this.getStatusLabel(t.status || 'Open');
+                    const cleanPhone = t.clientPhone ? t.clientPhone.replace(/\D/g, '') : '';
+                    
+                    // COMMUNICATION BAR (Universal Links)
+                    let commBar = '';
+                    if (t.clientPhone || t.clientEmail) {
+                        commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">
+                            ${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}
+                            ${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}
+                            ${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}
+                        </div>`;
+                    }
+
+                    // ADMIN CONTROLS (Status & Tech)
+                    let adminControls = '';
+                    if (this.data.currentUser.role === 'admin') {
+                        // Tech Selector
+                        let techOptions = `<option value="">-- Assign Tech --</option>`;
+                        this.data.users.filter(u => u.role.includes('tech')).forEach(u => {
+                            techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`;
+                        });
+
+                        adminControls = `
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase">Status</label>
+                                <select onchange="app.updateTicketStatus(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">
+                                    <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
+                                    <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Parts Pending</option>
+                                    <option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase">Technician</label>
+                                <select onchange="app.updateTicketTech(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">
+                                    ${techOptions}
+                                </select>
+                            </div>
+                        </div>`;
+                    } else {
+                        // Client View of Tech
+                        if (t.assignedTech) {
+                            adminControls = `<div class="mt-3 text-xs text-blue-600 font-bold bg-blue-50 px-3 py-2 rounded-lg inline-block"><i class="fas fa-tools mr-1"></i> Tech Assigned: ${t.assignedTech}</div>`;
+                        }
+                    }
+
+                    html += `
+                    <div class="apple-card p-6 relative group hover:shadow-lg transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>
+                                ${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}
+                                <span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>
+                                ${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                        </div>
+                        
+                        <h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4>
+                        <div class="text-xs text-gray-500 font-medium mb-2">
+                            <i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} 
+                            <span class="mx-2 opacity-30">|</span> 
+                            <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}
+                        </div>
+
+                        ${adminControls}
+                        ${commBar}
+                    </div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
+
             renderUserList: function(c, type) {
                 const list = this.data.users.filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
                 let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-800 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`;
@@ -346,6 +418,7 @@
                 else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none');
             },
 
+            // --- TICKET ACTIONS ---
             saveTicket: function() {
                 const id = document.getElementById('ticket-id').value;
                 const dept = document.getElementById('ticket-dept').value;
@@ -365,7 +438,17 @@
                 } else { this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
-            closeTicket: function(id) { const t = this.data.tickets.find(x => x.id === id); if(t) { t.status = "Completed"; this.saveToCloud(); this.router('tickets'); } },
+            
+            // New Live Update Functions
+            updateTicketStatus: function(id, newStatus) {
+                const t = this.data.tickets.find(x => x.id == id);
+                if(t) { t.status = newStatus; this.saveToCloud(); this.router('tickets'); }
+            },
+            updateTicketTech: function(id, newTech) {
+                const t = this.data.tickets.find(x => x.id == id);
+                if(t) { t.assignedTech = newTech; this.saveToCloud(); }
+            },
+
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
             editTicket: function(id) { app.openTicketModal(id); }, 
             openTicketModal: function(id=null) { 
@@ -390,7 +473,7 @@
             
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
             getRoleLabel: function(r) { return r === 'admin' ? 'Administrator' : r; },
-            updateBadge: function() { const c = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
+            updateBadge: function() { const c = this.data.tickets.filter(t => t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
         };
         app.init();
     </script>
