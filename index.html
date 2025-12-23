@@ -18,22 +18,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .clickable-card:hover { transform: translateY(-2px); cursor: pointer; border-color: #3b82f6; }
         
-        /* LOGO STYLES (Mobile Optimized) */
-        .logo-login { 
-            height: 90px; 
-            object-fit: contain; 
-            display: block; 
-            margin-left: auto; 
-            margin-right: auto;
-        }
-        .logo-sidebar { 
-            height: 50px; 
-            object-fit: contain; 
-            filter: brightness(0) invert(1); /* Torna o logo preto em branco */
-            display: block;
-            margin-bottom: 15px;
-        }
-        
+        .logo-login { height: 90px; object-fit: contain; display: block; margin: 0 auto; }
+        .logo-sidebar { height: 50px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.1); }
     </style>
@@ -53,7 +39,7 @@
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-purple-600"></div>
             <div class="text-center mb-8">
                 <img src="logo.png" alt="D2 Group" class="logo-login">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v14</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v15</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-5">
                 <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com"></div>
@@ -67,9 +53,7 @@
         <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-40 transform -translate-x-full md:translate-x-0 md:relative transition duration-200 ease-in-out">
             <div class="p-6 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-5 min-h-[120px] relative">
                  <button onclick="app.toggleSidebar()" class="absolute top-2 right-2 md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
-                
                 <img src="logo.png" class="logo-sidebar">
-                
                 <div class="flex gap-3 bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700">
                     <button onclick="app.setLang('en')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg" id="flag-en" class="flag-icon flag-active"></button>
                     <button onclick="app.setLang('pt')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/br.svg" id="flag-pt" class="flag-icon"></button>
@@ -116,7 +100,18 @@
             </div>
             <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-6 space-y-5 bg-gray-50 overflow-y-auto">
                 <input type="hidden" id="ticket-id">
-                <div id="field-client-name" class="hidden"><label class="block text-xs font-bold uppercase text-blue-800 mb-1" data-key="clientName">Client Name</label><input type="text" id="ticket-client-manual" class="w-full p-3 border border-blue-200 rounded-lg text-sm"></div>
+                
+                <div id="field-client-details" class="hidden space-y-3 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <p class="text-xs font-bold text-blue-800 uppercase" data-key="contactDetails">Contact Details</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <input type="text" id="ticket-client-manual" class="w-full p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name">
+                        <div class="flex gap-3">
+                            <input type="text" id="ticket-client-phone" class="w-1/2 p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone">
+                            <input type="text" id="ticket-client-email" class="w-1/2 p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="dept">Dept</label><select id="ticket-dept" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div>
                     <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="Normal">Normal</option><option value="Urgent">🚨 Urgent</option></select></div>
@@ -146,7 +141,7 @@
 
     <script>
         // ============================================
-        // FIREBASE CONFIGURATION (Suas Chaves)
+        // FIREBASE CONFIGURATION
         // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
@@ -165,15 +160,15 @@
         // ============================================
         const i18n = {
             en: { 
-                portalTitle: "Enterprise Portal v14", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name (Manual)", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role",
+                portalTitle: "Enterprise Portal v15", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
                 statusOpen: "Open", statusCompleted: "Completed"
             },
             pt: { 
-                portalTitle: "Portal Corporativo v14", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente (Manual)", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo",
+                portalTitle: "Portal Corporativo v15", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
                 statusOpen: "Aberto", statusCompleted: "Concluído"
             },
             es: { 
-                portalTitle: "Portal Empresarial v14", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente (Manual)", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol",
+                portalTitle: "Portal Empresarial v15", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
                 statusOpen: "Abierto", statusCompleted: "Completado"
             }
         };
@@ -242,6 +237,11 @@
                     const key = el.getAttribute('data-key');
                     if(i18n[this.lang][key]) el.innerText = i18n[this.lang][key];
                 });
+                
+                // Update placeholders explicitly
+                if(document.getElementById('ticket-client-manual')) {
+                    document.getElementById('ticket-client-manual').placeholder = i18n[this.lang].clientName;
+                }
             },
             t: function(key) { return i18n[this.lang][key] || key; },
 
@@ -282,7 +282,6 @@
                 this.updateLangUI();
             },
             
-            // --- TRANSLATION HELPER FOR STATUS ---
             getStatusLabel: function(status) {
                 if (status === 'Aberto' || status === 'Open' || status === 'Abierto') return this.t('statusOpen');
                 if (status === 'Concluído' || status === 'Completed' || status === 'Completado') return this.t('statusCompleted');
@@ -301,7 +300,34 @@
                 list.forEach(t => {
                     const isUrgent = t.priority === 'Urgent';
                     const displayStatus = this.getStatusLabel(t.status);
-                    html += `<div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4"><div class="flex gap-3 md:gap-4"><div class="flex flex-col gap-2 mb-1 md:mb-0"><span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}</div><div><h4 class="font-bold text-sm md:text-base">${t.desc}</h4><p class="text-xs text-gray-500 mt-1">${t.clientName} • ${t.date}</p></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0"><span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div></div>`;
+                    const phoneLink = t.clientPhone ? `<a href="tel:${t.clientPhone}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-phone-alt"></i></a>` : '';
+                    const emailLink = t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-envelope"></i></a>` : '';
+                    
+                    html += `
+                    <div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4">
+                        <div class="flex gap-3 md:gap-4">
+                            <div class="flex flex-col gap-2 mb-1 md:mb-0">
+                                <span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>
+                                ${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm md:text-base">${t.desc}</h4>
+                                <div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 items-center">
+                                    <span class="font-bold text-slate-700">${t.clientName}</span>
+                                    ${phoneLink} ${emailLink}
+                                    <span class="opacity-50">• ${t.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0">
+                            <span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span>
+                            <div class="flex gap-2">
+                                <button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>
+                                ${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}
+                                ${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
@@ -319,36 +345,51 @@
                 const desc = document.getElementById('ticket-desc').value;
                 const priority = document.getElementById('ticket-priority').value;
                 const manualName = document.getElementById('ticket-client-manual').value;
-                let cName = this.data.currentUser.name; let cEmail = this.data.currentUser.email;
+                const manualPhone = document.getElementById('ticket-client-phone').value;
+                const manualEmail = document.getElementById('ticket-client-email').value;
+
+                let cName = this.data.currentUser.name; 
+                let cEmail = this.data.currentUser.email;
+                let cPhone = "";
+
                 if (this.data.currentUser.role !== 'client') {
                     if (!manualName && !id) { alert("Client Name Required"); return; }
-                    cName = manualName + " (Via Admin)"; cEmail = "manual@entry";
+                    cName = manualName;
+                    cEmail = manualEmail || "manual@entry";
+                    cPhone = manualPhone || "";
                 }
                 
-                // SAVE AS CODE 'Open'
                 if(id) { 
                     const t = this.data.tickets.find(x => x.id == id); 
                     t.dept = dept; t.desc = desc; t.priority = priority; 
+                    if(manualName) { t.clientName = manualName; t.clientEmail = cEmail; t.clientPhone = cPhone; }
                 } else { 
-                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, date: new Date().toLocaleString('pt-BR') }); 
+                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); 
                 }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
             
-            // SAVE AS CODE 'Completed'
-            closeTicket: function(id) { 
-                const t = this.data.tickets.find(x => x.id === id); 
-                if(t) { t.status = "Completed"; this.saveToCloud(); this.router('tickets'); } 
-            },
-            
+            closeTicket: function(id) { const t = this.data.tickets.find(x => x.id === id); if(t) { t.status = "Completed"; this.saveToCloud(); this.router('tickets'); } },
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
             editTicket: function(id) { app.openTicketModal(id); }, 
             openTicketModal: function(id=null) { 
                 document.getElementById('modal-ticket').classList.remove('hidden'); document.getElementById('ticket-id').value = id||'';
-                const field = document.getElementById('field-client-name');
+                const field = document.getElementById('field-client-details');
                 if (this.data.currentUser.role !== 'client') field.classList.remove('hidden'); else field.classList.add('hidden');
-                if(id){ const t = this.data.tickets.find(x=>x.id==id); document.getElementById('ticket-desc').value=t.desc; document.getElementById('ticket-client-manual').value=t.clientName.replace(' (Via Admin)',''); document.getElementById('ticket-dept').value=t.dept; document.getElementById('ticket-priority').value=t.priority; } 
-                else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; }
+                if(id){ 
+                    const t = this.data.tickets.find(x=>x.id==id); 
+                    document.getElementById('ticket-desc').value=t.desc; 
+                    document.getElementById('ticket-client-manual').value=t.clientName;
+                    document.getElementById('ticket-client-phone').value=t.clientPhone || '';
+                    document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail;
+                    document.getElementById('ticket-dept').value=t.dept; 
+                    document.getElementById('ticket-priority').value=t.priority; 
+                } else { 
+                    document.getElementById('ticket-desc').value = ''; 
+                    document.getElementById('ticket-client-manual').value = ''; 
+                    document.getElementById('ticket-client-phone').value = ''; 
+                    document.getElementById('ticket-client-email').value = ''; 
+                }
             },
             saveUser: function() {
                 const id = document.getElementById('user-id').value;
