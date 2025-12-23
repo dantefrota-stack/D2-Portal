@@ -24,23 +24,25 @@
         }
         .apple-card:active { transform: scale(0.96); }
 
-        /* --- BRANDING & LOGOS --- */
-        /* Brand Pill: Garante contraste em fundos claros */
-        .brand-pill {
-            background-color: #0f172a; /* Slate 900 background for contrast */
-            padding: 12px 24px;
-            border-radius: 16px;
-            display: inline-block;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        /* --- BRANDING & LOGOS (DARK PILL STRATEGY) --- */
+        /* Brand Pill Dark: Fundo ESCURO para contraste perfeito com dourado e branco */
+        .brand-pill-dark {
+            background-color: #0f172a; /* Slate 900 (Preto/Azul Escuro) */
+            padding: 15px 25px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
         }
 
-        .logo-main { height: 50px; object-fit: contain; display: block; margin: 0 auto; }
+        .logo-main { height: 55px; object-fit: contain; display: block; }
         .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
         .logo-header-mobile { height: 32px; object-fit: contain; display: block; }
         
-        /* Subsidiary Logos (Full Color & Sharp) */
-        .logo-sub-small { height: 28px; width: auto; object-fit: contain; }
-        .logo-sub-login { height: 35px; width: auto; object-fit: contain; }
+        /* Subsidiary Logos */
+        .logo-sub-small { height: 32px; width: auto; object-fit: contain; }
+        .logo-sub-login { height: 40px; width: auto; object-fit: contain; }
 
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
@@ -57,24 +59,24 @@
 
     <div id="view-auth" class="fixed inset-0 bg-[#F2F2F7] z-[60] flex items-center justify-center fade-in p-6">
         <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col">
-            <div class="text-center mb-8 flex-grow">
-                <div class="brand-pill mb-6">
+            <div class="text-center mb-10 flex-grow">
+                <div class="brand-pill-dark mb-8">
                     <img src="logo.png" alt="D2 Group" class="logo-main">
                 </div>
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-key="portalTitle">Enterprise Portal</p>
             </div>
-            <form onsubmit="event.preventDefault(); app.login();" class="space-y-6 mb-8">
+            <form onsubmit="event.preventDefault(); app.login();" class="space-y-6 mb-10">
                 <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="admin@d2group.com"></div>
                 <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="••••••"></div>
                 <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide transform active:scale-95" data-key="loginBtn">ACCESS SYSTEM</button>
             </form>
             
-            <div class="text-center border-t border-gray-100 pt-6">
+            <div class="text-center border-t border-gray-100 pt-8">
                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-wider">Powered By Subsidiaries</p>
-                <div class="flex justify-center items-center gap-8 transition">
-                    <img src="logo-hvac.png" alt="D2 HVAC" class="logo-sub-login hover:scale-105 transition" onerror="this.style.display='none'">
-                    <div class="h-5 w-px bg-gray-200"></div>
-                    <img src="logo-smart.png" alt="D2 Smart Home" class="logo-sub-login hover:scale-105 transition" onerror="this.style.display='none'">
+                <div class="brand-pill-dark inline-flex items-center gap-8 px-8 py-4 transition hover:scale-105">
+                    <img src="logo-hvac.png" alt="D2 HVAC" class="logo-sub-login" onerror="this.style.display='none'">
+                    <div class="h-6 w-px bg-gray-500 opacity-50"></div>
+                    <img src="logo-smart.png" alt="D2 Smart Home" class="logo-sub-login" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
@@ -106,7 +108,7 @@
                 <div class="flex items-center gap-4">
                     <button onclick="app.toggleSidebar()" class="md:hidden text-slate-800 p-2 -ml-2 rounded-lg hover:bg-gray-100"><i class="fas fa-bars text-xl"></i></button>
                     <h1 id="page-title" class="hidden md:block text-2xl font-bold text-slate-800 tracking-tight">Overview</h1>
-                    <div class="md:hidden brand-pill py-2 px-4 rounded-lg"><img src="logo.png" class="logo-header-mobile"></div>
+                    <div class="md:hidden brand-pill-dark py-2 px-4 rounded-xl shadow-sm"><img src="logo.png" class="logo-header-mobile"></div>
                 </div>
                 <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-100 p-2 rounded-full transition border border-transparent hover:border-gray-200" onclick="app.editUser(app.data.currentUser.id)">
                     <div class="text-right leading-tight hidden sm:block mr-2"><p id="user-display-name" class="text-sm font-bold text-slate-900">User</p><p id="user-display-role" class="text-[10px] text-blue-600 font-bold uppercase tracking-wide">Role</p></div>
@@ -295,8 +297,8 @@
             renderDashboard: function(c) {
                  const active = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length;
                  const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && (t.status === 'Aberto' || t.status === 'Open')).length;
-                 // DASHBOARD ACTION CARD: Logos full color e maiores
-                 c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="flex justify-center md:justify-start gap-5 transition"><img src="logo-hvac.png" class="logo-sub-small hover:scale-105 transition" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small hover:scale-105 transition" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
+                 // DASHBOARD ACTION CARD: Logos full color em fundo ESCURO (dark pill)
+                 c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm transition hover:scale-105"><img src="logo-hvac.png" class="logo-sub-small" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
             renderTickets: function(c) {
                 let list = this.data.tickets;
