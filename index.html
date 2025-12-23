@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2 Group Nexus | Global System</title>
+    <title>D2 Group Nexus | System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,176 +12,124 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background-color: #F2F2F7; }
         .sidebar-active { background-color: #1e293b; color: white; border-right: 3px solid #3b82f6; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .clickable-card:hover { transform: translateY(-2px); cursor: pointer; border-color: #3b82f6; }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        .logo-login { height: 90px; object-fit: contain; display: block; margin: 0 auto; }
-        .logo-sidebar { height: 50px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
+        /* APPLE STYLE CARDS */
+        .apple-card {
+            background: white;
+            border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer;
+        }
+        .apple-card:active { transform: scale(0.96); }
+
+        /* --- BRANDING & LOGOS --- */
+        /* Brand Pill: Garante contraste em fundos claros */
+        .brand-pill {
+            background-color: #0f172a; /* Slate 900 background for contrast */
+            padding: 12px 24px;
+            border-radius: 16px;
+            display: inline-block;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .logo-main { height: 50px; object-fit: contain; display: block; margin: 0 auto; }
+        .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
+        .logo-header-mobile { height: 32px; object-fit: contain; display: block; }
+        
+        /* Subsidiary Logos (Full Color & Sharp) */
+        .logo-sub-small { height: 28px; width: auto; object-fit: contain; }
+        .logo-sub-login { height: 35px; width: auto; object-fit: contain; }
+
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
-        .flag-active { border-color: #3b82f6; transform: scale(1.1); }
+        .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
     </style>
 </head>
-<body class="text-slate-800 antialiased h-screen flex overflow-hidden bg-slate-50">
+<body class="text-slate-800 antialiased h-screen flex overflow-hidden">
 
     <div id="loading-overlay" class="fixed inset-0 bg-slate-900 z-[70] flex flex-col items-center justify-center text-white hidden">
         <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
-        <p class="animate-pulse">Syncing D2 Database...</p>
+        <p class="animate-pulse font-medium tracking-wide">D2 CLOUD SYNC</p>
     </div>
 
-    <div id="mobile-overlay" onclick="app.toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden md:hidden transition-opacity"></div>
+    <div id="mobile-overlay" onclick="app.toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-30 z-30 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
 
-    <div id="view-auth" class="fixed inset-0 bg-slate-900 z-[60] flex items-center justify-center fade-in p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-purple-600"></div>
-            <div class="text-center mb-8">
-                <img src="logo.png" alt="D2 Group" class="logo-login">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v17</p>
+    <div id="view-auth" class="fixed inset-0 bg-[#F2F2F7] z-[60] flex items-center justify-center fade-in p-6">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col">
+            <div class="text-center mb-8 flex-grow">
+                <div class="brand-pill mb-6">
+                    <img src="logo.png" alt="D2 Group" class="logo-main">
+                </div>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-key="portalTitle">Enterprise Portal</p>
             </div>
-            <form onsubmit="event.preventDefault(); app.login();" class="space-y-5">
-                <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com"></div>
-                <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••"></div>
-                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide" data-key="loginBtn">ACCESS SYSTEM</button>
+            <form onsubmit="event.preventDefault(); app.login();" class="space-y-6 mb-8">
+                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="admin@d2group.com"></div>
+                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="••••••"></div>
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide transform active:scale-95" data-key="loginBtn">ACCESS SYSTEM</button>
             </form>
+            
+            <div class="text-center border-t border-gray-100 pt-6">
+                <p class="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-wider">Powered By Subsidiaries</p>
+                <div class="flex justify-center items-center gap-8 transition">
+                    <img src="logo-hvac.png" alt="D2 HVAC" class="logo-sub-login hover:scale-105 transition" onerror="this.style.display='none'">
+                    <div class="h-5 w-px bg-gray-200"></div>
+                    <img src="logo-smart.png" alt="D2 Smart Home" class="logo-sub-login hover:scale-105 transition" onerror="this.style.display='none'">
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="view-main" class="hidden flex w-full h-full relative">
-        <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-40 transform -translate-x-full md:translate-x-0 md:relative transition duration-200 ease-in-out">
-            <div class="p-6 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-5 min-h-[120px] relative">
-                 <button onclick="app.toggleSidebar()" class="absolute top-2 right-2 md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-40 transform -translate-x-full md:translate-x-0 md:relative transition duration-300 cubic-bezier(0.25, 0.8, 0.25, 1)">
+            <div class="p-8 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-[0.03] min-h-[150px] relative">
+                 <button onclick="app.toggleSidebar()" class="absolute top-4 right-4 md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
                 <img src="logo.png" class="logo-sidebar">
-                <div class="flex gap-3 bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700">
-                    <button onclick="app.setLang('en')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg" id="flag-en" class="flag-icon flag-active"></button>
-                    <button onclick="app.setLang('pt')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/br.svg" id="flag-pt" class="flag-icon"></button>
-                    <button onclick="app.setLang('es')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/es.svg" id="flag-es" class="flag-icon"></button>
+                <span id="env-badge" class="text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-slate-700">System Loading...</span>
+                <div class="flex gap-4">
+                    <button onclick="app.setLang('en')" class="hover:scale-110 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg" id="flag-en" class="flag-icon flag-active"></button>
+                    <button onclick="app.setLang('pt')" class="hover:scale-110 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/br.svg" id="flag-pt" class="flag-icon"></button>
+                    <button onclick="app.setLang('es')" class="hover:scale-110 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/es.svg" id="flag-es" class="flag-icon"></button>
                 </div>
             </div>
-            <nav class="flex-1 py-6 space-y-1 px-3 overflow-y-auto">
-                <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-chart-pie w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuDash">Dashboard</span></button>
-                <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-clipboard-check w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span></button>
-                
-                <button onclick="app.openSupportModal()" id="nav-support" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group hidden"><i class="fas fa-headset w-6 text-center group-hover:text-yellow-400"></i> <span class="font-medium text-sm" data-key="menuSupport">Support</span></button>
-
-                <div id="admin-menu" class="hidden">
-                    <div class="mt-8 mb-2 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-wider" data-key="menuMgmt">Management</div>
-                    <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-users w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuTeam">Team & HR</span></button>
-                    <button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-address-book w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuClients">Clients CRM</span></button>
-                    <button onclick="app.openSettingsModal()" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group mt-2 text-slate-400"><i class="fas fa-cog w-6 text-center group-hover:text-white"></i> <span class="font-medium text-sm" data-key="menuSettings">Settings</span></button>
-                </div>
+            <nav class="flex-1 py-6 space-y-2 px-4 overflow-y-auto">
+                <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-chart-pie w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuDash">Dashboard</span></button>
+                <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-clipboard-check w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-lg shadow-blue-500/50">0</span></button>
+                <div id="menu-client" class="hidden"><div class="my-4 border-t border-slate-800"></div><button onclick="app.openSupportModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl bg-gradient-to-r from-blue-900 to-slate-900 border border-blue-900/50 hover:border-blue-500 transition group font-bold text-white shadow-lg"><i class="fas fa-headset w-8 text-center text-yellow-400 animate-pulse"></i> <span data-key="menuSupport">Support Center</span></button></div>
+                <div id="menu-admin" class="hidden"><div class="mt-8 mb-3 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-widest" data-key="menuMgmt">Management</div><button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-users w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuTeam">Team & HR</span></button><button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-address-book w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuClients">Clients CRM</span></button><button onclick="app.openSettingsModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group mt-2 text-slate-400 font-medium text-sm"><i class="fas fa-cog w-8 text-center group-hover:text-white transition"></i> <span data-key="menuSettings">Settings</span></button></div>
             </nav>
-            <div class="p-4 border-t border-slate-800 bg-slate-950">
-                <button onclick="app.logout()" class="w-full flex items-center px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition text-xs font-bold uppercase tracking-wide"><i class="fas fa-power-off w-6 text-center mr-1"></i> <span data-key="logout">Logout</span></button>
-            </div>
+            <div class="p-6 border-t border-slate-800 bg-slate-950"><button onclick="app.logout()" class="w-full flex items-center justify-center px-4 py-3 text-red-400 hover:text-white hover:bg-red-600/20 rounded-xl transition text-xs font-bold uppercase tracking-wide"><i class="fas fa-power-off mr-2"></i> <span data-key="logout">Logout</span></button></div>
         </aside>
 
-        <main class="flex-1 flex flex-col bg-slate-50 relative overflow-hidden w-full">
-            <header class="bg-white h-16 border-b border-gray-200 flex justify-between items-center px-4 md:px-8 shadow-sm z-10 flex-shrink-0">
+        <main class="flex-1 flex flex-col bg-[#F2F2F7] relative overflow-hidden w-full">
+            <header class="bg-white/80 backdrop-blur-md h-20 border-b border-gray-200 flex justify-between items-center px-5 md:px-10 shadow-sm z-10 flex-shrink-0 sticky top-0">
                 <div class="flex items-center gap-4">
-                    <button onclick="app.toggleSidebar()" class="md:hidden text-slate-600 hover:text-blue-600 p-2 -ml-2"><i class="fas fa-bars text-xl"></i></button>
-                    <h1 id="page-title" class="text-lg md:text-xl font-bold text-slate-800 truncate">Overview</h1>
+                    <button onclick="app.toggleSidebar()" class="md:hidden text-slate-800 p-2 -ml-2 rounded-lg hover:bg-gray-100"><i class="fas fa-bars text-xl"></i></button>
+                    <h1 id="page-title" class="hidden md:block text-2xl font-bold text-slate-800 tracking-tight">Overview</h1>
+                    <div class="md:hidden brand-pill py-2 px-4 rounded-lg"><img src="logo.png" class="logo-header-mobile"></div>
                 </div>
-                <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded-lg transition" onclick="app.editUser(app.data.currentUser.id)" title="Edit Profile">
-                    <div class="text-right leading-tight hidden sm:block">
-                        <p id="user-display-name" class="text-sm font-bold text-slate-900 truncate max-w-[150px]">User</p>
-                        <p id="user-display-role" class="text-[10px] text-blue-600 font-bold uppercase tracking-wide">Role</p>
-                    </div>
-                    <div class="h-9 w-9 bg-slate-900 rounded-full flex items-center justify-center text-white border-2 border-slate-200 shadow-sm"><i class="fas fa-user-tie"></i></div>
+                <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-100 p-2 rounded-full transition border border-transparent hover:border-gray-200" onclick="app.editUser(app.data.currentUser.id)">
+                    <div class="text-right leading-tight hidden sm:block mr-2"><p id="user-display-name" class="text-sm font-bold text-slate-900">User</p><p id="user-display-role" class="text-[10px] text-blue-600 font-bold uppercase tracking-wide">Role</p></div>
+                    <div class="h-10 w-10 bg-slate-900 rounded-full flex items-center justify-center text-white shadow-md ring-2 ring-gray-100"><i class="fas fa-user-tie"></i></div>
                 </div>
             </header>
-            <div id="app-content" class="flex-1 overflow-y-auto p-4 md:p-8 fade-in"></div>
+            <div id="app-content" class="flex-1 overflow-y-auto p-5 md:p-10 fade-in pb-20"></div>
         </main>
     </div>
 
-    <div id="modal-ticket" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800 flex-shrink-0">
-                <h3 class="text-white font-bold text-lg" id="modal-ticket-title">New Ticket</h3>
-                <button onclick="app.closeModal('ticket')" class="text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-6 space-y-5 bg-gray-50 overflow-y-auto">
-                <input type="hidden" id="ticket-id">
-                <div id="field-client-details" class="hidden space-y-3 bg-blue-50 p-4 rounded-xl border border-blue-100">
-                    <p class="text-xs font-bold text-blue-800 uppercase" data-key="contactDetails">Contact Details</p>
-                    <div class="grid grid-cols-1 gap-3">
-                        <input type="text" id="ticket-client-manual" class="w-full p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name">
-                        <div class="flex gap-3">
-                            <input type="text" id="ticket-client-phone" class="w-1/2 p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone">
-                            <input type="text" id="ticket-client-email" class="w-1/2 p-2 border border-blue-200 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email">
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="dept">Dept</label><select id="ticket-dept" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div>
-                    <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 border border-gray-200 rounded-lg text-sm"><option value="Normal">Normal</option><option value="Urgent">🚨 Urgent</option></select></div>
-                </div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="desc">Description</label><textarea id="ticket-desc" required class="w-full p-3 border border-gray-200 rounded-lg h-24 text-sm resize-none"></textarea></div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-lg hover:bg-blue-700 text-sm" data-key="saveBtn">Save Ticket</button>
-            </form>
+    <div id="modal-ticket" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col apple-card">
+            <div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-xl" id="modal-ticket-title">New Request</h3><button onclick="app.closeModal('ticket')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button></div>
+            <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-8 space-y-6 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="ticket-id"><div id="field-client-details" class="hidden space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider" data-key="contactDetails">Contact Details</p><div class="space-y-3"><input type="text" id="ticket-client-manual" class="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name"><div class="flex gap-3"><input type="text" id="ticket-client-phone" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone"><input type="text" id="ticket-client-email" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email"></div></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="dept">Department</label><select id="ticket-dept" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="Normal">Normal (48h)</option><option value="Urgent">🚨 Urgent (ASAP)</option></select></div></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="desc">Description</label><textarea id="ticket-desc" required class="w-full p-4 bg-white border border-gray-200 rounded-2xl h-32 text-sm resize-none focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"></textarea></div><button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Ticket</button></form>
         </div>
     </div>
-    
-    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800">
-                <h3 class="text-white font-bold">Manage User</h3>
-                <button onclick="app.closeModal('user')" class="text-slate-400 hover:text-white p-2"><i class="fas fa-times"></i></button>
-            </div>
-            <form onsubmit="event.preventDefault(); app.saveUser();" class="p-6 space-y-4 bg-gray-50 overflow-y-auto">
-                <input type="hidden" id="user-id">
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-2 border rounded text-sm"></div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="role">Role</label><select id="new-user-role" class="w-full p-2 border rounded text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-2 border rounded text-sm"></div>
-                <div><label class="block text-xs font-bold uppercase text-gray-500 mb-1" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-2 border rounded bg-gray-100 text-sm"></div>
-                <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded hover:bg-green-700 text-sm" data-key="saveBtn">Save Data</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-center justify-center backdrop-blur-sm p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden">
-            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800">
-                <h3 class="text-white font-bold"><i class="fas fa-cog mr-2"></i> System Settings</h3>
-                <button onclick="app.closeModal('settings')" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
-            </div>
-            <form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-4">
-                <p class="text-xs text-gray-500 mb-2">Configure support numbers. Include country code (e.g. 1 for US).</p>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-green-600 mb-1"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label>
-                    <input type="text" id="setting-whatsapp" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15615550199">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-blue-600 mb-1"><i class="fas fa-phone mr-1"></i> Support Phone</label>
-                    <input type="text" id="setting-phone" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15615550199">
-                </div>
-                <button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded hover:bg-slate-700 text-sm">Save Settings</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal-support" class="hidden fixed inset-0 bg-slate-900 bg-opacity-75 z-50 flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4">
-        <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl w-full max-w-sm overflow-hidden pb-6">
-            <div class="bg-slate-900 px-6 py-4 flex justify-between items-center border-b border-slate-800">
-                <h3 class="text-white font-bold"><i class="fas fa-headset mr-2"></i> Support Center</h3>
-                <button onclick="app.closeModal('support')" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="p-6 space-y-4 text-center">
-                <p class="text-sm text-gray-600 mb-4">How would you like to contact us?</p>
-                <a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-green-500 text-white font-bold py-4 rounded-xl shadow-md hover:bg-green-600 transition flex items-center justify-center gap-2">
-                    <i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp
-                </a>
-                <a id="btn-phone" href="#" class="block w-full bg-blue-500 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-600 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-phone-alt text-2xl"></i> Call Support
-                </a>
-            </div>
-        </div>
-    </div>
+    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-md overflow-hidden apple-card"><div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-xl">Manage Profile</h3><button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="user-id"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div><button type="submit" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Changes</button></form></div></div>
+    <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold"><i class="fas fa-cog mr-2"></i> Settings</h3><button onclick="app.closeModal('settings')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-5"><p class="text-xs text-gray-500 mb-2 leading-relaxed">Set the support numbers for your clients. Always include the country code (e.g. 1 for USA, 55 for Brazil).</p><div><label class="block text-xs font-bold uppercase text-green-600 mb-2"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label><input type="text" id="setting-whatsapp" class="w-full p-3 bg-green-50 border border-green-100 rounded-xl text-sm font-mono text-green-800" placeholder="e.g. 15615550199"></div><div><label class="block text-xs font-bold uppercase text-blue-600 mb-2"><i class="fas fa-phone mr-1"></i> Phone Number</label><input type="text" id="setting-phone" class="w-full p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm font-mono text-blue-800" placeholder="e.g. 15615550199"></div><button type="submit" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 text-sm shadow-md">Save Configuration</button></form></div></div>
+    <div id="modal-support" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden pb-8 apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-lg">Support Center</h3><button onclick="app.closeModal('support')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><div class="p-8 space-y-4 text-center"><div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-500 text-2xl shadow-inner"><i class="fas fa-headset"></i></div><p class="text-sm text-gray-600 mb-6 font-medium">Need help? Choose a method below:</p><a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#20bd5a] transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp</a><a id="btn-phone" href="#" class="block w-full bg-white text-slate-700 border-2 border-slate-100 font-bold py-4 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fas fa-phone-alt text-xl text-slate-400"></i> Call Support</a></div></div></div>
 
     <script>
         // ============================================
-        // FIREBASE CONFIGURATION (COLE SUAS CHAVES AQUI SE PRECISAR)
+        // FIREBASE CONFIG
         // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
@@ -200,15 +148,15 @@
         // ============================================
         const i18n = {
             en: { 
-                portalTitle: "Enterprise Portal v17", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
+                portalTitle: "Enterprise Portal", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support Center", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Actions", actionSub: "Create new requests for HVAC or Smart Home services.", newTicket: "New Ticket", ticketHist: "History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
                 statusOpen: "Open", statusCompleted: "Completed"
             },
             pt: { 
-                portalTitle: "Portal Corporativo v17", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Suporte", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
+                portalTitle: "Portal Corporativo", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Central de Ajuda", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Ações", actionSub: "Crie novas solicitações para serviços HVAC ou Smart Home.", newTicket: "Novo Chamado", ticketHist: "Histórico", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
                 statusOpen: "Aberto", statusCompleted: "Concluído"
             },
             es: { 
-                portalTitle: "Portal Empresarial v17", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Soporte", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
+                portalTitle: "Portal Empresarial", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Centro de Ayuda", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Acciones", actionSub: "Cree nuevas solicitudes para servicios HVAC o Smart Home.", newTicket: "Nuevo Ticket", ticketHist: "Historial", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
                 statusOpen: "Abierto", statusCompleted: "Completado"
             }
         };
@@ -302,8 +250,20 @@
                 document.getElementById('user-display-name').innerText = user.name;
                 document.getElementById('user-display-role').innerText = this.getRoleLabel(user.role);
                 
-                if (user.role === 'admin') { document.getElementById('admin-menu').classList.remove('hidden'); }
-                if (user.role === 'client') { document.getElementById('nav-support').classList.remove('hidden'); }
+                document.getElementById('menu-admin').classList.add('hidden');
+                document.getElementById('menu-client').classList.add('hidden');
+                
+                if (user.role === 'admin') {
+                    document.getElementById('menu-admin').classList.remove('hidden');
+                    document.getElementById('env-badge').innerText = 'ADMIN CONSOLE';
+                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-green-400 mb-4 border border-green-900/30';
+                } else if (user.role === 'client') {
+                    document.getElementById('menu-client').classList.remove('hidden');
+                    document.getElementById('env-badge').innerText = 'CLIENT PORTAL';
+                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-blue-900/30';
+                } else {
+                    document.getElementById('env-badge').innerText = 'TECH PANEL';
+                }
 
                 this.router('dashboard');
                 this.updateBadge();
@@ -313,7 +273,10 @@
                 document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('sidebar-active', 'bg-slate-800'));
                 const activeBtn = document.getElementById(`nav-${page}`);
                 if(activeBtn) activeBtn.classList.add('sidebar-active');
-                document.getElementById('page-title').innerText = this.t(page === 'dashboard' ? 'menuDash' : (page === 'tickets' ? 'menuTickets' : (page === 'team' ? 'menuTeam' : 'menuClients')));
+                
+                const pageTitle = this.t(page === 'dashboard' ? 'menuDash' : (page === 'tickets' ? 'menuTickets' : (page === 'team' ? 'menuTeam' : 'menuClients')));
+                document.getElementById('page-title').innerText = pageTitle;
+                
                 const container = document.getElementById('app-content');
                 container.innerHTML = '';
                 if (page === 'dashboard') this.renderDashboard(container);
@@ -332,25 +295,26 @@
             renderDashboard: function(c) {
                  const active = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length;
                  const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && (t.status === 'Aberto' || t.status === 'Open')).length;
-                 c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8"><div onclick="app.router('tickets')" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition"><div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase" data-key="openTickets">Open</p><p class="text-2xl font-bold text-slate-800">${active}</p></div></div><div onclick="app.router('tickets')" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-red-500 transition"><div class="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-xl"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase" data-key="urgent">Urgent</p><p class="text-2xl font-bold text-slate-800">${urgent}</p></div></div></div><div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4"><div><h2 class="text-xl md:text-2xl font-bold mb-2 text-center md:text-left" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm text-center md:text-left" data-key="actionSub">Manage system.</p></div><button onclick="app.openTicketModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
+                 // DASHBOARD ACTION CARD: Logos full color e maiores
+                 c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="flex justify-center md:justify-start gap-5 transition"><img src="logo-hvac.png" class="logo-sub-small hover:scale-105 transition" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small hover:scale-105 transition" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
             renderTickets: function(c) {
                 let list = this.data.tickets;
                 if(this.data.currentUser.role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
-                let html = `<div class="flex justify-between items-center mb-6"><h2 class="text-lg font-bold text-slate-700" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-4">`;
+                let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-5">`;
                 list.forEach(t => {
                     const isUrgent = t.priority === 'Urgent';
                     const displayStatus = this.getStatusLabel(t.status);
-                    const phoneLink = t.clientPhone ? `<a href="tel:${t.clientPhone}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-phone-alt"></i></a>` : '';
-                    const emailLink = t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="text-blue-500 hover:underline ml-1"><i class="fas fa-envelope"></i></a>` : '';
-                    html += `<div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4"><div class="flex gap-3 md:gap-4"><div class="flex flex-col gap-2 mb-1 md:mb-0"><span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}</div><div><h4 class="font-bold text-sm md:text-base">${t.desc}</h4><div class="text-xs text-gray-500 mt-1 flex flex-wrap gap-2 items-center"><span class="font-bold text-slate-700">${t.clientName}</span>${phoneLink} ${emailLink}<span class="opacity-50">• ${t.date}</span></div></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0"><span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div></div>`;
+                    const phoneLink = t.clientPhone ? `<a href="tel:${t.clientPhone}" class="text-slate-400 hover:text-blue-600 ml-2 transition"><i class="fas fa-phone-alt"></i></a>` : '';
+                    const emailLink = t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="text-slate-400 hover:text-blue-600 ml-2 transition"><i class="fas fa-envelope"></i></a>` : '';
+                    html += `<div class="apple-card p-6 flex flex-col md:flex-row justify-between gap-6 hover:shadow-lg ${isUrgent?'border-l-4 border-red-500':''}"><div class="flex gap-5"><div class="hidden sm:flex w-12 h-12 rounded-2xl bg-gray-50 flex-shrink-0 items-center justify-center text-gray-400 text-xl"><i class="fas fa-ticket-alt"></i></div><div><div class="flex items-center gap-2 mb-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>':''}</div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 flex items-center font-medium"><i class="fas fa-user-circle mr-1.5 opacity-50"></i> ${t.clientName} ${phoneLink} ${emailLink} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1.5 opacity-50"></i> ${t.date}</div></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-gray-100"><span class="text-xs font-bold px-3 py-1.5 rounded-lg ${t.status === 'Completed' || t.status === 'Concluído' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'}">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="w-8 h-8 rounded-full bg-gray-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition flex items-center justify-center" title="Complete"><i class="fas fa-check text-xs"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition flex items-center justify-center"><i class="fas fa-trash text-xs"></i></button>` : ''}</div></div></div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
             renderUserList: function(c, type) {
                 const list = this.data.users.filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
-                let html = `<div class="flex justify-between items-center mb-6"><h2 class="font-bold text-lg text-slate-700" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-slate-700 transition"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">`;
-                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border relative group flex items-center gap-4 transition"><div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-lg text-slate-600 border border-slate-200 shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 text-sm truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-gray-400 mt-0.5 truncate">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-500 font-mono truncate mt-1">${u.email}</p></div><div class="absolute top-2 right-2 flex gap-2 md:opacity-0 group-hover:opacity-100 transition"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button></div></div>`);
+                let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-800 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`;
+                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="apple-card p-6 relative group flex items-center gap-5 hover:-translate-y-1 transition"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-xl text-slate-600 border border-white shadow-sm shrink-0">${u.name.charAt(0)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-blue-500 mt-0.5 truncate tracking-wide">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-400 font-medium truncate mt-1">${u.email}</p></div><div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition shadow-sm"><i class="fas fa-trash text-xs"></i></button></div></div>`);
                 c.innerHTML = html + `</div>`;
             },
 
@@ -370,15 +334,12 @@
             openSupportModal: function() {
                 document.getElementById('modal-support').classList.remove('hidden');
                 const rawWa = this.data.settings.whatsapp || '';
-                const cleanWa = rawWa.replace(/\D/g, ''); // LIMPADOR AUTOMATICO: Remove tudo que não for numero
+                const cleanWa = rawWa.replace(/\D/g, ''); 
                 const ph = this.data.settings.phone || '';
-                
                 document.getElementById('btn-whatsapp').href = cleanWa ? `https://wa.me/${cleanWa}` : '#';
                 document.getElementById('btn-phone').href = ph ? `tel:${ph}` : '#';
-                
                 if(!cleanWa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none');
                 else document.getElementById('btn-whatsapp').classList.remove('opacity-50', 'pointer-events-none');
-                
                 if(!ph) document.getElementById('btn-phone').classList.add('opacity-50', 'pointer-events-none');
                 else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none');
             },
