@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2 Group Nexus | Cloud System</title>
+    <title>D2 Group Nexus | Global System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,17 +13,27 @@
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
-        /* Sidebar Active State */
         .sidebar-active { background-color: #1e293b; color: white; border-right: 3px solid #3b82f6; }
-        /* Animations */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* Mobile Sidebar Transition */
-        .sidebar-transition { transition: transform 0.3s ease-in-out; }
-        
         .clickable-card:hover { transform: translateY(-2px); cursor: pointer; border-color: #3b82f6; }
-        .logo-login { height: 90px; object-fit: contain; }
-        .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); }
+        
+        /* LOGO STYLES (Mobile Optimized) */
+        .logo-login { 
+            height: 90px; 
+            object-fit: contain; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto;
+        }
+        .logo-sidebar { 
+            height: 50px; 
+            object-fit: contain; 
+            filter: brightness(0) invert(1); /* Torna o logo preto em branco */
+            display: block;
+            margin-bottom: 15px;
+        }
+        
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.1); }
     </style>
@@ -36,40 +46,30 @@
     </div>
 
     <div id="mobile-overlay" onclick="app.toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-30 hidden md:hidden transition-opacity"></div>
-
     <div id="toast-container" class="fixed top-5 right-5 z-[80] space-y-2 pointer-events-none w-auto max-w-xs"></div>
 
     <div id="view-auth" class="fixed inset-0 bg-slate-900 z-[60] flex items-center justify-center fade-in p-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-purple-600"></div>
             <div class="text-center mb-8">
-                <img src="https://lh3.googleusercontent.com/d/1EXVm9ikRUDv-GlTOOl8dtdISYsNJmVAr" alt="D2 Group" class="logo-login mx-auto mb-4" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
-                <h2 id="alt-logo" class="hidden text-2xl font-bold mb-4">D2 GROUP</h2>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2" data-key="portalTitle">Enterprise Portal v12 (Mobile)</p>
+                <img src="logo.png" alt="D2 Group" class="logo-login">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v14</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label>
-                    <input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1" data-key="passLabel">Password</label>
-                    <input type="password" id="login-pass" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••">
-                </div>
+                <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com"></div>
+                <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••"></div>
                 <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide" data-key="loginBtn">ACCESS SYSTEM</button>
             </form>
         </div>
     </div>
 
     <div id="view-main" class="hidden flex w-full h-full relative">
-        
         <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-40 transform -translate-x-full md:translate-x-0 md:relative transition duration-200 ease-in-out">
-            <div class="p-6 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-5 min-h-[110px] relative">
-                 <button onclick="app.toggleSidebar()" class="absolute top-2 right-2 md:hidden text-slate-400 hover:text-white p-2">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-
-                <img src="https://lh3.googleusercontent.com/d/1EXVm9ikRUDv-GlTOOl8dtdISYsNJmVAr" class="logo-sidebar mb-4" onerror="this.src='logo.png'">
+            <div class="p-6 border-b border-slate-800 flex flex-col items-center bg-white bg-opacity-5 min-h-[120px] relative">
+                 <button onclick="app.toggleSidebar()" class="absolute top-2 right-2 md:hidden text-slate-400 hover:text-white p-2"><i class="fas fa-times text-xl"></i></button>
+                
+                <img src="logo.png" class="logo-sidebar">
+                
                 <div class="flex gap-3 bg-slate-800 p-2 rounded-full shadow-inner border border-slate-700">
                     <button onclick="app.setLang('en')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/us.svg" id="flag-en" class="flag-icon flag-active"></button>
                     <button onclick="app.setLang('pt')" class="hover:opacity-80 transition"><img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/1x1/br.svg" id="flag-pt" class="flag-icon"></button>
@@ -77,39 +77,25 @@
                 </div>
             </div>
             <nav class="flex-1 py-6 space-y-1 px-3 overflow-y-auto">
-                <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group">
-                    <i class="fas fa-chart-pie w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuDash">Dashboard</span>
-                </button>
-                <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group">
-                    <i class="fas fa-clipboard-check w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuTickets">Tickets</span>
-                    <span id="badge-tickets" class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
-                </button>
+                <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-chart-pie w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuDash">Dashboard</span></button>
+                <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-clipboard-check w-6 text-center group-hover:text-blue-400"></i> <span class="font-medium text-sm" data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span></button>
                 <div id="admin-menu" class="hidden">
                     <div class="mt-8 mb-2 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-wider" data-key="menuMgmt">Management</div>
-                    <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group">
-                        <i class="fas fa-users w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuTeam">Team & HR</span>
-                    </button>
-                    <button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group">
-                        <i class="fas fa-address-book w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuClients">Clients CRM</span>
-                    </button>
+                    <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-users w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuTeam">Team & HR</span></button>
+                    <button onclick="app.router('clients')" id="nav-clients" class="w-full flex items-center px-4 py-3 rounded-lg hover:bg-slate-800 transition group"><i class="fas fa-address-book w-6 text-center group-hover:text-green-400"></i> <span class="font-medium text-sm" data-key="menuClients">Clients CRM</span></button>
                 </div>
             </nav>
             <div class="p-4 border-t border-slate-800 bg-slate-950">
-                <button onclick="app.logout()" class="w-full flex items-center px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition text-xs font-bold uppercase tracking-wide">
-                    <i class="fas fa-power-off w-6 text-center mr-1"></i> <span data-key="logout">Logout</span>
-                </button>
+                <button onclick="app.logout()" class="w-full flex items-center px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition text-xs font-bold uppercase tracking-wide"><i class="fas fa-power-off w-6 text-center mr-1"></i> <span data-key="logout">Logout</span></button>
             </div>
         </aside>
 
         <main class="flex-1 flex flex-col bg-slate-50 relative overflow-hidden w-full">
             <header class="bg-white h-16 border-b border-gray-200 flex justify-between items-center px-4 md:px-8 shadow-sm z-10 flex-shrink-0">
                 <div class="flex items-center gap-4">
-                    <button onclick="app.toggleSidebar()" class="md:hidden text-slate-600 hover:text-blue-600 p-2 -ml-2">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+                    <button onclick="app.toggleSidebar()" class="md:hidden text-slate-600 hover:text-blue-600 p-2 -ml-2"><i class="fas fa-bars text-xl"></i></button>
                     <h1 id="page-title" class="text-lg md:text-xl font-bold text-slate-800 truncate">Overview</h1>
                 </div>
-                
                 <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-1 rounded-lg transition" onclick="app.editUser(app.data.currentUser.id)" title="Edit Profile">
                     <div class="text-right leading-tight hidden sm:block">
                         <p id="user-display-name" class="text-sm font-bold text-slate-900 truncate max-w-[150px]">User</p>
@@ -118,7 +104,6 @@
                     <div class="h-9 w-9 bg-slate-900 rounded-full flex items-center justify-center text-white border-2 border-slate-200 shadow-sm"><i class="fas fa-user-tie"></i></div>
                 </div>
             </header>
-
             <div id="app-content" class="flex-1 overflow-y-auto p-4 md:p-8 fade-in"></div>
         </main>
     </div>
@@ -161,7 +146,7 @@
 
     <script>
         // ============================================
-        // FIREBASE CONFIG (Suas chaves originais)
+        // FIREBASE CONFIGURATION (Suas Chaves)
         // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
@@ -176,12 +161,21 @@
         const db = firebase.firestore();
 
         // ============================================
-        // APP LOGIC
+        // CORE LOGIC
         // ============================================
         const i18n = {
-            en: { portalTitle: "Enterprise Portal v12", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name (Manual)", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role" },
-            pt: { portalTitle: "Portal Corporativo v12", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente (Manual)", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo" },
-            es: { portalTitle: "Portal Empresarial v12", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente (Manual)", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol" }
+            en: { 
+                portalTitle: "Enterprise Portal v14", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name (Manual)", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role",
+                statusOpen: "Open", statusCompleted: "Completed"
+            },
+            pt: { 
+                portalTitle: "Portal Corporativo v14", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente (Manual)", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo",
+                statusOpen: "Aberto", statusCompleted: "Concluído"
+            },
+            es: { 
+                portalTitle: "Portal Empresarial v14", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente (Manual)", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol",
+                statusOpen: "Abierto", statusCompleted: "Completado"
+            }
         };
 
         const app = {
@@ -205,18 +199,12 @@
                 this.updateLangUI();
             },
 
-            // --- Mobile Sidebar Toggle ---
             toggleSidebar: function() {
                 this.sidebarOpen = !this.sidebarOpen;
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobile-overlay');
-                if (this.sidebarOpen) {
-                    sidebar.classList.remove('-translate-x-full');
-                    overlay.classList.remove('hidden');
-                } else {
-                    sidebar.classList.add('-translate-x-full');
-                    overlay.classList.add('hidden');
-                }
+                if (this.sidebarOpen) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
+                else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
             },
 
             syncFromCloud: async function() {
@@ -280,7 +268,7 @@
                 this.updateBadge();
             },
             router: function(page) {
-                if(this.sidebarOpen && window.innerWidth < 768) this.toggleSidebar(); // Close mobile menu on nav
+                if(this.sidebarOpen && window.innerWidth < 768) this.toggleSidebar();
                 document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('sidebar-active', 'bg-slate-800'));
                 const activeBtn = document.getElementById(`nav-${page}`);
                 if(activeBtn) activeBtn.classList.add('sidebar-active');
@@ -294,10 +282,16 @@
                 this.updateLangUI();
             },
             
+            // --- TRANSLATION HELPER FOR STATUS ---
+            getStatusLabel: function(status) {
+                if (status === 'Aberto' || status === 'Open' || status === 'Abierto') return this.t('statusOpen');
+                if (status === 'Concluído' || status === 'Completed' || status === 'Completado') return this.t('statusCompleted');
+                return status;
+            },
+
             renderDashboard: function(c) {
-                 const active = this.data.tickets.filter(t => t.status === 'Aberto').length;
-                 const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && t.status === 'Aberto').length;
-                 // Changed grid to 1 col on mobile, 3 on desktop
+                 const active = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length;
+                 const urgent = this.data.tickets.filter(t => t.priority === 'Urgent' && (t.status === 'Aberto' || t.status === 'Open')).length;
                  c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8"><div onclick="app.router('tickets')" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 transition"><div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase" data-key="openTickets">Open</p><p class="text-2xl font-bold text-slate-800">${active}</p></div></div><div onclick="app.router('tickets')" class="clickable-card bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 border-l-4 border-red-500 transition"><div class="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-xl"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase" data-key="urgent">Urgent</p><p class="text-2xl font-bold text-slate-800">${urgent}</p></div></div></div><div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-6 md:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4"><div><h2 class="text-xl md:text-2xl font-bold mb-2 text-center md:text-left" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm text-center md:text-left" data-key="actionSub">Manage system.</p></div><button onclick="app.openTicketModal()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
             renderTickets: function(c) {
@@ -306,8 +300,8 @@
                 let html = `<div class="flex justify-between items-center mb-6"><h2 class="text-lg font-bold text-slate-700" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-blue-700 transition"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-4">`;
                 list.forEach(t => {
                     const isUrgent = t.priority === 'Urgent';
-                    // Mobile optimized ticket card layout
-                    html += `<div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4"><div class="flex gap-3 md:gap-4"><div class="flex flex-col gap-2 mb-1 md:mb-0"><span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}</div><div><h4 class="font-bold text-sm md:text-base">${t.desc}</h4><p class="text-xs text-gray-500 mt-1">${t.clientName} • ${t.date}</p></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0"><span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${t.status}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${this.data.currentUser.role !== 'client' && t.status !== 'Concluído' ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div></div>`;
+                    const displayStatus = this.getStatusLabel(t.status);
+                    html += `<div class="bg-white p-4 md:p-5 rounded-xl shadow-sm border ${isUrgent?'border-l-4 border-red-500':''} flex flex-col md:flex-row justify-between gap-4"><div class="flex gap-3 md:gap-4"><div class="flex flex-col gap-2 mb-1 md:mb-0"><span class="text-[10px] font-bold uppercase bg-gray-100 px-1.5 py-0.5 rounded text-center w-fit">${t.dept}</span>${isUrgent?'<span class="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded animate-pulse text-center w-fit">URGENT</span>':''}</div><div><h4 class="font-bold text-sm md:text-base">${t.desc}</h4><p class="text-xs text-gray-500 mt-1">${t.clientName} • ${t.date}</p></div></div><div class="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-2 mt-2 md:mt-0 border-t md:border-t-0 pt-3 md:pt-0"><span class="text-xs font-bold px-2 py-1 rounded bg-yellow-100">${displayStatus}</span><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-400 hover:text-blue-500 p-1"><i class="fas fa-pen"></i></button>${this.data.currentUser.role !== 'client' && (t.status !== 'Concluído' && t.status !== 'Completed') ? `<button onclick="app.closeTicket(${t.id})" class="text-blue-500 hover:text-blue-700 p-1" title="Complete"><i class="fas fa-check"></i></button>` : ''}${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-trash"></i></button>` : ''}</div></div></div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
@@ -330,11 +324,23 @@
                     if (!manualName && !id) { alert("Client Name Required"); return; }
                     cName = manualName + " (Via Admin)"; cEmail = "manual@entry";
                 }
-                if(id) { const t = this.data.tickets.find(x => x.id == id); t.dept = dept; t.desc = desc; t.priority = priority; } 
-                else { this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Aberto", clientName: cName, clientEmail: cEmail, date: new Date().toLocaleString('pt-BR') }); }
+                
+                // SAVE AS CODE 'Open'
+                if(id) { 
+                    const t = this.data.tickets.find(x => x.id == id); 
+                    t.dept = dept; t.desc = desc; t.priority = priority; 
+                } else { 
+                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, date: new Date().toLocaleString('pt-BR') }); 
+                }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
-            closeTicket: function(id) { const t = this.data.tickets.find(x => x.id === id); if(t) { t.status = "Concluído"; this.saveToCloud(); this.router('tickets'); } },
+            
+            // SAVE AS CODE 'Completed'
+            closeTicket: function(id) { 
+                const t = this.data.tickets.find(x => x.id === id); 
+                if(t) { t.status = "Completed"; this.saveToCloud(); this.router('tickets'); } 
+            },
+            
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
             editTicket: function(id) { app.openTicketModal(id); }, 
             openTicketModal: function(id=null) { 
@@ -359,7 +365,10 @@
             
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
             getRoleLabel: function(r) { return r === 'admin' ? 'CEO / Admin' : r; },
-            updateBadge: function() { const c = this.data.tickets.filter(t => t.status === 'Aberto').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
+            updateBadge: function() { 
+                const c = this.data.tickets.filter(t => t.status === 'Aberto' || t.status === 'Open').length; 
+                document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); 
+            }
         };
         app.init();
     </script>
