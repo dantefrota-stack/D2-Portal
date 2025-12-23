@@ -38,7 +38,7 @@
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-purple-600"></div>
             <div class="text-center mb-8">
                 <img src="logo.png" alt="D2 Group" class="logo-login">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v16</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-4" data-key="portalTitle">Enterprise Portal v17</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-5">
                 <div><label class="block text-sm font-bold text-slate-700 mb-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="admin@d2group.com"></div>
@@ -147,14 +147,14 @@
                 <button onclick="app.closeModal('settings')" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-4">
-                <p class="text-xs text-gray-500 mb-2">Configure support numbers for your clients.</p>
+                <p class="text-xs text-gray-500 mb-2">Configure support numbers. Include country code (e.g. 1 for US).</p>
                 <div>
                     <label class="block text-xs font-bold uppercase text-green-600 mb-1"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label>
-                    <input type="text" id="setting-whatsapp" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15550199">
+                    <input type="text" id="setting-whatsapp" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15615550199">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-blue-600 mb-1"><i class="fas fa-phone mr-1"></i> Support Phone</label>
-                    <input type="text" id="setting-phone" class="w-full p-2 border rounded text-sm" placeholder="e.g. +1 555-0199">
+                    <input type="text" id="setting-phone" class="w-full p-2 border rounded text-sm" placeholder="e.g. 15615550199">
                 </div>
                 <button type="submit" class="w-full bg-slate-800 text-white font-bold py-3 rounded hover:bg-slate-700 text-sm">Save Settings</button>
             </form>
@@ -181,7 +181,7 @@
 
     <script>
         // ============================================
-        // FIREBASE CONFIGURATION
+        // FIREBASE CONFIGURATION (COLE SUAS CHAVES AQUI SE PRECISAR)
         // ============================================
         const firebaseConfig = {
             apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
@@ -200,15 +200,15 @@
         // ============================================
         const i18n = {
             en: { 
-                portalTitle: "Enterprise Portal v16", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
+                portalTitle: "Enterprise Portal v17", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Action Panel", actionSub: "Manage requests, check status and add services.", newTicket: "New Ticket", ticketHist: "Ticket History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
                 statusOpen: "Open", statusCompleted: "Completed"
             },
             pt: { 
-                portalTitle: "Portal Corporativo v16", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Suporte", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
+                portalTitle: "Portal Corporativo v17", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Suporte", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Painel de Ações", actionSub: "Gerencie solicitações e adicione serviços.", newTicket: "Novo Chamado", ticketHist: "Histórico de Chamados", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
                 statusOpen: "Aberto", statusCompleted: "Concluído"
             },
             es: { 
-                portalTitle: "Portal Empresarial v16", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Soporte", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
+                portalTitle: "Portal Empresarial v17", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Soporte", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Panel de Acción", actionSub: "Administre solicitudes y servicios.", newTicket: "Nuevo Ticket", ticketHist: "Historial de Tickets", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
                 statusOpen: "Abierto", statusCompleted: "Completado"
             }
         };
@@ -302,13 +302,8 @@
                 document.getElementById('user-display-name').innerText = user.name;
                 document.getElementById('user-display-role').innerText = this.getRoleLabel(user.role);
                 
-                // Show menus based on role
-                if (user.role === 'admin') {
-                    document.getElementById('admin-menu').classList.remove('hidden');
-                }
-                if (user.role === 'client') {
-                    document.getElementById('nav-support').classList.remove('hidden');
-                }
+                if (user.role === 'admin') { document.getElementById('admin-menu').classList.remove('hidden'); }
+                if (user.role === 'client') { document.getElementById('nav-support').classList.remove('hidden'); }
 
                 this.router('dashboard');
                 this.updateBadge();
@@ -374,12 +369,14 @@
             },
             openSupportModal: function() {
                 document.getElementById('modal-support').classList.remove('hidden');
-                const wa = this.data.settings.whatsapp || '';
+                const rawWa = this.data.settings.whatsapp || '';
+                const cleanWa = rawWa.replace(/\D/g, ''); // LIMPADOR AUTOMATICO: Remove tudo que não for numero
                 const ph = this.data.settings.phone || '';
-                document.getElementById('btn-whatsapp').href = wa ? `https://wa.me/${wa}` : '#';
+                
+                document.getElementById('btn-whatsapp').href = cleanWa ? `https://wa.me/${cleanWa}` : '#';
                 document.getElementById('btn-phone').href = ph ? `tel:${ph}` : '#';
                 
-                if(!wa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none');
+                if(!cleanWa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none');
                 else document.getElementById('btn-whatsapp').classList.remove('opacity-50', 'pointer-events-none');
                 
                 if(!ph) document.getElementById('btn-phone').classList.add('opacity-50', 'pointer-events-none');
