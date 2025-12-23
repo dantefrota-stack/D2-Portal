@@ -25,13 +25,7 @@
         
         /* DARK PILL STRATEGY (Logos) */
         .brand-pill-dark {
-            background-color: #0f172a; /* Slate 900 */
-            padding: 15px 25px;
-            border-radius: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            background-color: #0f172a; padding: 15px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         .logo-main { height: 55px; object-fit: contain; display: block; }
@@ -43,14 +37,13 @@
         .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
         .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
         
-        /* Select Inputs Styling */
+        /* Security Blur for Passwords */
+        .secure-blur { filter: blur(4px); transition: filter 0.3s; cursor: pointer; user-select: none; }
+        .secure-blur:hover, .secure-blur:active { filter: blur(0); }
+
         .custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center;
-            background-repeat: no-repeat;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-            appearance: none;
+            background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; appearance: none;
         }
     </style>
 </head>
@@ -130,7 +123,53 @@
             <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-8 space-y-6 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="ticket-id"><div id="field-client-details" class="hidden space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider" data-key="contactDetails">Contact Details</p><div class="space-y-3"><input type="text" id="ticket-client-manual" class="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name"><div class="flex gap-3"><input type="text" id="ticket-client-phone" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone"><input type="text" id="ticket-client-email" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email"></div></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="dept">Department</label><select id="ticket-dept" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="Normal">Normal (48h)</option><option value="Urgent">🚨 Urgent (ASAP)</option></select></div></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="desc">Description</label><textarea id="ticket-desc" required class="w-full p-4 bg-white border border-gray-200 rounded-2xl h-32 text-sm resize-none focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"></textarea></div><button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Ticket</button></form>
         </div>
     </div>
-    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-md overflow-hidden apple-card"><div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-xl">Manage Profile</h3><button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="user-id"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div><button type="submit" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Changes</button></form></div></div>
+
+    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col apple-card">
+            <div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
+                <h3 class="text-slate-800 font-bold text-xl">Client Profile</h3>
+                <button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="overflow-y-auto flex-1">
+                <form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50">
+                    <input type="hidden" id="user-id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Administrator</option></select></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
+                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div>
+                    </div>
+                    <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition" data-key="saveBtn">Save Profile Data</button>
+                </form>
+
+                <div id="client-vault-section" class="px-8 pb-8 bg-white border-t border-gray-100 hidden">
+                    <div class="pt-6 mb-4 flex justify-between items-center">
+                        <h4 class="text-lg font-bold text-slate-800"><i class="fas fa-vault text-blue-500 mr-2"></i> Client Vault & History</h4>
+                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded font-bold">Admin Only</span>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100">
+                        <textarea id="vault-input" class="w-full bg-white border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 mb-3" placeholder="Add note, password, or device info..." rows="2"></textarea>
+                        <div class="flex justify-between items-center">
+                            <div class="flex gap-2">
+                                <button type="button" onclick="app.setNoteType('general')" class="px-3 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-600 hover:bg-gray-300">📝 General</button>
+                                <button type="button" onclick="app.setNoteType('password')" class="px-3 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200">🔐 Password</button>
+                                <button type="button" onclick="app.setNoteType('device')" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-600 hover:bg-blue-200">📱 Device</button>
+                                <button type="button" onclick="app.setNoteType('network')" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-600 hover:bg-purple-200">🛜 Network</button>
+                            </div>
+                            <button onclick="app.addClientNote()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Save Entry</button>
+                        </div>
+                        <input type="hidden" id="vault-type" value="general">
+                    </div>
+
+                    <div id="vault-list" class="space-y-3 max-h-60 overflow-y-auto pr-2">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold"><i class="fas fa-cog mr-2"></i> Settings</h3><button onclick="app.closeModal('settings')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-5"><p class="text-xs text-gray-500 mb-2 leading-relaxed">Set the support numbers for your clients. Always include the country code (e.g. 1 for USA, 55 for Brazil).</p><div><label class="block text-xs font-bold uppercase text-green-600 mb-2"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label><input type="text" id="setting-whatsapp" class="w-full p-3 bg-green-50 border border-green-100 rounded-xl text-sm font-mono text-green-800" placeholder="e.g. 15615550199"></div><div><label class="block text-xs font-bold uppercase text-blue-600 mb-2"><i class="fas fa-phone mr-1"></i> Phone Number</label><input type="text" id="setting-phone" class="w-full p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm font-mono text-blue-800" placeholder="e.g. 15615550199"></div><button type="submit" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 text-sm shadow-md">Save Configuration</button></form></div></div>
     <div id="modal-support" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden pb-8 apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-lg">Support Center</h3><button onclick="app.closeModal('support')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><div class="p-8 space-y-4 text-center"><div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-500 text-2xl shadow-inner"><i class="fas fa-headset"></i></div><p class="text-sm text-gray-600 mb-6 font-medium">Need help? Choose a method below:</p><a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#20bd5a] transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp</a><a id="btn-phone" href="#" class="block w-full bg-white text-slate-700 border-2 border-slate-100 font-bold py-4 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fas fa-phone-alt text-xl text-slate-400"></i> Call Support</a></div></div></div>
 
@@ -292,7 +331,7 @@
                 if (status === 'In Progress') return this.t('statusInProgress');
                 if (status === 'Pending') return this.t('statusPending');
                 if (status === 'Completed') return this.t('statusCompleted');
-                return status; // Fallback
+                return status;
             },
 
             renderDashboard: function(c) {
@@ -301,7 +340,6 @@
                  c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Create new requests for HVAC or Smart Home services.</p><div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm transition hover:scale-105"><img src="logo-hvac.png" class="logo-sub-small" onerror="this.style.display='none'"><img src="logo-smart.png" class="logo-sub-small" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
             },
             
-            // --- UPDATED TICKET RENDERER WITH STATUS CONTROL & COMMUNICATION BUTTONS ---
             renderTickets: function(c) {
                 let list = this.data.tickets;
                 if(this.data.currentUser.role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
@@ -312,75 +350,18 @@
                     const isUrgent = t.priority === 'Urgent';
                     const displayStatus = this.getStatusLabel(t.status || 'Open');
                     const cleanPhone = t.clientPhone ? t.clientPhone.replace(/\D/g, '') : '';
-                    
-                    // COMMUNICATION BAR (Universal Links)
                     let commBar = '';
                     if (t.clientPhone || t.clientEmail) {
-                        commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">
-                            ${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}
-                            ${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}
-                            ${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}
-                        </div>`;
+                        commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}</div>`;
                     }
-
-                    // ADMIN CONTROLS (Status & Tech)
                     let adminControls = '';
                     if (this.data.currentUser.role === 'admin') {
-                        // Tech Selector
                         let techOptions = `<option value="">-- Assign Tech --</option>`;
-                        this.data.users.filter(u => u.role.includes('tech')).forEach(u => {
-                            techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`;
-                        });
+                        this.data.users.filter(u => u.role.includes('tech')).forEach(u => { techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`; });
+                        adminControls = `<div class="mt-4 grid grid-cols-2 gap-3"><div><label class="text-[10px] font-bold text-gray-400 uppercase">Status</label><select onchange="app.updateTicketStatus(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer"><option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option><option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option><option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Parts Pending</option><option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option></select></div><div><label class="text-[10px] font-bold text-gray-400 uppercase">Technician</label><select onchange="app.updateTicketTech(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">${techOptions}</select></div></div>`;
+                    } else { if (t.assignedTech) { adminControls = `<div class="mt-3 text-xs text-blue-600 font-bold bg-blue-50 px-3 py-2 rounded-lg inline-block"><i class="fas fa-tools mr-1"></i> Tech Assigned: ${t.assignedTech}</div>`; } }
 
-                        adminControls = `
-                        <div class="mt-4 grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase">Status</label>
-                                <select onchange="app.updateTicketStatus(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">
-                                    <option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option>
-                                    <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Parts Pending</option>
-                                    <option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase">Technician</label>
-                                <select onchange="app.updateTicketTech(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">
-                                    ${techOptions}
-                                </select>
-                            </div>
-                        </div>`;
-                    } else {
-                        // Client View of Tech
-                        if (t.assignedTech) {
-                            adminControls = `<div class="mt-3 text-xs text-blue-600 font-bold bg-blue-50 px-3 py-2 rounded-lg inline-block"><i class="fas fa-tools mr-1"></i> Tech Assigned: ${t.assignedTech}</div>`;
-                        }
-                    }
-
-                    html += `
-                    <div class="apple-card p-6 relative group hover:shadow-lg transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>
-                                ${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}
-                                <span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>
-                                ${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}
-                            </div>
-                        </div>
-                        
-                        <h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4>
-                        <div class="text-xs text-gray-500 font-medium mb-2">
-                            <i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} 
-                            <span class="mx-2 opacity-30">|</span> 
-                            <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}
-                        </div>
-
-                        ${adminControls}
-                        ${commBar}
-                    </div>`;
+                    html += `<div class="apple-card p-6 relative group hover:shadow-lg transition"><div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}<span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span></div><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>${this.data.currentUser.role === 'admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}</div></div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 font-medium mb-2"><i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}</div>${adminControls}${commBar}</div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
@@ -392,7 +373,7 @@
                 c.innerHTML = html + `</div>`;
             },
 
-            // ACTIONS & SETTINGS
+            // ACTIONS
             openSettingsModal: function() {
                 document.getElementById('modal-settings').classList.remove('hidden');
                 document.getElementById('setting-whatsapp').value = this.data.settings.whatsapp || '';
@@ -418,7 +399,6 @@
                 else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none');
             },
 
-            // --- TICKET ACTIONS ---
             saveTicket: function() {
                 const id = document.getElementById('ticket-id').value;
                 const dept = document.getElementById('ticket-dept').value;
@@ -438,17 +418,8 @@
                 } else { this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR') }); }
                 this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
             },
-            
-            // New Live Update Functions
-            updateTicketStatus: function(id, newStatus) {
-                const t = this.data.tickets.find(x => x.id == id);
-                if(t) { t.status = newStatus; this.saveToCloud(); this.router('tickets'); }
-            },
-            updateTicketTech: function(id, newTech) {
-                const t = this.data.tickets.find(x => x.id == id);
-                if(t) { t.assignedTech = newTech; this.saveToCloud(); }
-            },
-
+            updateTicketStatus: function(id, newStatus) { const t = this.data.tickets.find(x => x.id == id); if(t) { t.status = newStatus; this.saveToCloud(); this.router('tickets'); } },
+            updateTicketTech: function(id, newTech) { const t = this.data.tickets.find(x => x.id == id); if(t) { t.assignedTech = newTech; this.saveToCloud(); } },
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
             editTicket: function(id) { app.openTicketModal(id); }, 
             openTicketModal: function(id=null) { 
@@ -458,18 +429,132 @@
                 if(id){ const t = this.data.tickets.find(x=>x.id==id); document.getElementById('ticket-desc').value=t.desc; document.getElementById('ticket-client-manual').value=t.clientName; document.getElementById('ticket-client-phone').value=t.clientPhone || ''; document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail; document.getElementById('ticket-dept').value=t.dept; document.getElementById('ticket-priority').value=t.priority; } 
                 else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; document.getElementById('ticket-client-phone').value = ''; document.getElementById('ticket-client-email').value = ''; }
             },
+            
+            // --- NEW: USER MANAGEMENT WITH VAULT ---
             saveUser: function() {
                 const id = document.getElementById('user-id').value;
-                const uData = { id: id ? parseInt(id) : Date.now(), name: document.getElementById('new-user-name').value, role: document.getElementById('new-user-role').value, email: document.getElementById('new-user-email').value, pass: document.getElementById('new-user-pass').value };
-                if(id) { const idx = this.data.users.findIndex(x => x.id == id); this.data.users[idx] = uData; } else { this.data.users.push(uData); }
-                this.saveToCloud(); this.closeModal('user'); 
-                if(id == this.data.currentUser.id) location.reload(); else this.router(uData.role==='client'?'clients':'team');
+                const uData = {
+                    id: id ? parseInt(id) : Date.now(),
+                    name: document.getElementById('new-user-name').value,
+                    role: document.getElementById('new-user-role').value,
+                    email: document.getElementById('new-user-email').value,
+                    pass: document.getElementById('new-user-pass').value
+                };
+                
+                // Preserve notes if editing
+                if(id) { 
+                    const idx = this.data.users.findIndex(x => x.id == id);
+                    if(this.data.users[idx].notes) uData.notes = this.data.users[idx].notes; // Keep existing notes
+                    this.data.users[idx] = uData; 
+                } else { 
+                    this.data.users.push(uData); 
+                }
+                
+                this.saveToCloud(); 
+                this.closeModal('user'); 
+                if(id == this.data.currentUser.id) location.reload(); 
+                else this.router(uData.role==='client'?'clients':'team');
             },
-            deleteUser: function(id) { if(confirm(this.t('remove') + '?')) { this.data.users = this.data.users.filter(u => u.id !== id); this.saveToCloud(); this.router('team'); } },
+            
             editUser: function(id) { 
-                const u = this.data.users.find(x => x.id == id); document.getElementById('user-id').value = u.id; document.getElementById('new-user-name').value = u.name; document.getElementById('new-user-email').value = u.email; document.getElementById('new-user-pass').value = u.pass; document.getElementById('new-user-role').value = u.role;
+                const u = this.data.users.find(x => x.id == id);
+                document.getElementById('user-id').value = u.id; 
+                document.getElementById('new-user-name').value = u.name; 
+                document.getElementById('new-user-email').value = u.email; 
+                document.getElementById('new-user-pass').value = u.pass; 
+                document.getElementById('new-user-role').value = u.role;
+                
+                // Toggle Vault Visibility (Only for Admins viewing Clients)
+                const vaultSection = document.getElementById('client-vault-section');
+                if (this.data.currentUser.role === 'admin' && u.role === 'client') {
+                    vaultSection.classList.remove('hidden');
+                    this.renderClientNotes(u.id);
+                } else {
+                    vaultSection.classList.add('hidden');
+                }
+
                 document.getElementById('modal-user').classList.remove('hidden');
             },
+
+            // --- CLIENT VAULT LOGIC ---
+            setNoteType: function(type) {
+                document.getElementById('vault-type').value = type;
+                const input = document.getElementById('vault-input');
+                // Visual feedback
+                if(type === 'password') input.placeholder = "Enter password or secure credential...";
+                else if(type === 'device') input.placeholder = "Enter device name and location...";
+                else if(type === 'network') input.placeholder = "Enter Wi-Fi SSID and Password...";
+                else input.placeholder = "Enter note...";
+            },
+
+            addClientNote: function() {
+                const userId = document.getElementById('user-id').value;
+                const text = document.getElementById('vault-input').value.trim();
+                const type = document.getElementById('vault-type').value;
+                if(!text) return;
+
+                const userIndex = this.data.users.findIndex(u => u.id == userId);
+                if(userIndex > -1) {
+                    if(!this.data.users[userIndex].notes) this.data.users[userIndex].notes = [];
+                    
+                    this.data.users[userIndex].notes.unshift({
+                        id: Date.now(),
+                        date: new Date().toLocaleString(),
+                        text: text,
+                        type: type,
+                        author: this.data.currentUser.name
+                    });
+                    
+                    this.saveToCloud();
+                    document.getElementById('vault-input').value = '';
+                    this.renderClientNotes(userId);
+                }
+            },
+
+            renderClientNotes: function(userId) {
+                const u = this.data.users.find(x => x.id == userId);
+                const list = document.getElementById('vault-list');
+                list.innerHTML = '';
+                
+                if(!u.notes || u.notes.length === 0) {
+                    list.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No history recorded.</p>';
+                    return;
+                }
+
+                u.notes.forEach(note => {
+                    let icon = '📝';
+                    let bgClass = 'bg-gray-50 border-gray-200';
+                    let textClass = 'text-gray-700';
+                    
+                    if(note.type === 'password') { icon = '🔐'; bgClass = 'bg-red-50 border-red-100'; textClass = 'text-red-800 font-mono secure-blur'; }
+                    if(note.type === 'device') { icon = '📱'; bgClass = 'bg-blue-50 border-blue-100'; }
+                    if(note.type === 'network') { icon = '🛜'; bgClass = 'bg-purple-50 border-purple-100'; }
+
+                    list.innerHTML += `
+                    <div class="p-3 rounded-lg border ${bgClass} flex gap-3 items-start">
+                        <div class="text-lg">${icon}</div>
+                        <div class="flex-1">
+                            <p class="text-xs text-gray-400 mb-1 flex justify-between">
+                                <span>${note.date}</span>
+                                <span class="font-bold">${note.author || 'Admin'}</span>
+                            </p>
+                            <p class="text-sm ${textClass}">${note.text}</p>
+                        </div>
+                        <button onclick="app.deleteNote(${userId}, ${note.id})" class="text-gray-300 hover:text-red-500"><i class="fas fa-times"></i></button>
+                    </div>`;
+                });
+            },
+
+            deleteNote: function(userId, noteId) {
+                if(confirm('Delete this entry?')) {
+                    const idx = this.data.users.findIndex(u => u.id == userId);
+                    this.data.users[idx].notes = this.data.users[idx].notes.filter(n => n.id !== noteId);
+                    this.saveToCloud();
+                    this.renderClientNotes(userId);
+                }
+            },
+
+            deleteUser: function(id) { if(confirm(this.t('remove') + '?')) { this.data.users = this.data.users.filter(u => u.id !== id); this.saveToCloud(); this.router('team'); } },
             
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
             getRoleLabel: function(r) { return r === 'admin' ? 'Administrator' : r; },
