@@ -3,52 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D2 Group Nexus | Multi-Company</title>
+    <title>D2 Group Nexus | Interactive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #F2F2F7; }
         .sidebar-active { background-color: #1e293b; color: white; border-right: 3px solid #3b82f6; }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .apple-card { background: white; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        
-        /* BRANDING */
+        .apple-card { background: white; border-radius: 24px; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; }
+        .apple-card:active { transform: scale(0.98); }
         .brand-pill-dark { background-color: #0f172a; padding: 15px 25px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3); }
         .logo-main { height: 55px; object-fit: contain; display: block; }
         .logo-sidebar { height: 45px; object-fit: contain; filter: brightness(0) invert(1); display: block; margin-bottom: 15px; }
         .logo-header-mobile { height: 32px; object-fit: contain; display: block; }
         .logo-sub-login { height: 40px; width: auto; object-fit: contain; }
-        
-        /* Logos Clicáveis no Dashboard */
-        .logo-btn { 
-            height: 32px; width: auto; object-fit: contain; 
-            cursor: pointer; transition: transform 0.2s; 
-        }
+        .logo-btn { height: 32px; width: auto; object-fit: contain; cursor: pointer; transition: transform 0.2s; }
         .logo-btn:hover { transform: scale(1.1); filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-
-        .flag-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; transition: all 0.2s; }
-        .flag-active { border-color: #3b82f6; transform: scale(1.15); box-shadow: 0 0 10px rgba(59,130,246,0.3); }
-        .secure-blur { filter: blur(4px); transition: filter 0.3s; cursor: pointer; user-select: none; }
-        .secure-blur:hover, .secure-blur:active { filter: blur(0); }
-        
-        /* AVATAR INITIALS */
-        .avatar-circle {
-            width: 40px; height: 40px;
-            background-color: #0f172a; color: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
+        .avatar-circle { width: 40px; height: 40px; background-color: #0f172a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; letter-spacing: 1px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         input:disabled, select:disabled { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; border-color: #e5e7eb; }
     </style>
 </head>
@@ -56,7 +34,13 @@
 
     <div id="loading-overlay" class="fixed inset-0 bg-slate-900 z-[70] flex flex-col items-center justify-center text-white hidden">
         <i class="fas fa-circle-notch fa-spin text-4xl mb-4 text-blue-500"></i>
-        <p class="animate-pulse font-medium tracking-wide">D2 CLOUD SYNC</p>
+        <p class="animate-pulse font-medium tracking-wide">D2 SYSTEM ACTIVE...</p>
+    </div>
+
+    <div style="display:none;">
+        <img id="img-logo-main" src="logo.png" crossorigin="anonymous">
+        <img id="img-logo-hvac" src="logo-hvac.png" crossorigin="anonymous">
+        <img id="img-logo-smart" src="logo-smart.png" crossorigin="anonymous">
     </div>
 
     <div id="mobile-overlay" onclick="app.toggleSidebar()" class="fixed inset-0 bg-slate-900 bg-opacity-30 z-30 hidden md:hidden transition-opacity backdrop-blur-sm"></div>
@@ -68,9 +52,9 @@
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest" data-key="portalTitle">Enterprise Portal</p>
             </div>
             <form onsubmit="event.preventDefault(); app.login();" class="space-y-6 mb-10">
-                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="emailLabel">Corporate Email</label><input type="email" id="login-email" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="admin@d2group.com"></div>
-                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="passLabel">Password</label><input type="password" id="login-pass" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="••••••"></div>
-                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide transform active:scale-95" data-key="loginBtn">ACCESS SYSTEM</button>
+                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Corporate Email</label><input type="email" id="login-email" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="dante.frota@allcablingtech.com"></div>
+                <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Password</label><input type="password" id="login-pass" required class="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition font-medium" placeholder="••••••"></div>
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition shadow-lg text-sm uppercase tracking-wide transform active:scale-95">ACCESS SYSTEM</button>
             </form>
             <div class="text-center border-t border-gray-100 pt-8">
                 <p class="text-[10px] uppercase font-bold text-gray-400 mb-4 tracking-wider">Powered By Subsidiaries</p>
@@ -98,9 +82,7 @@
             <nav class="flex-1 py-6 space-y-2 px-4 overflow-y-auto">
                 <button onclick="app.router('dashboard')" id="nav-dashboard" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-chart-pie w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuDash">Dashboard</span></button>
                 <button onclick="app.router('tickets')" id="nav-tickets" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-clipboard-check w-8 text-center group-hover:text-blue-400 transition"></i> <span data-key="menuTickets">Tickets</span><span id="badge-tickets" class="ml-auto bg-blue-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full hidden shadow-lg shadow-blue-500/50">0</span></button>
-                
                 <div id="menu-client" class="hidden"><div class="my-4 border-t border-slate-800"></div><button onclick="app.openSupportModal()" class="w-full flex items-center px-4 py-3.5 rounded-xl bg-gradient-to-r from-blue-900 to-slate-900 border border-blue-900/50 hover:border-blue-500 transition group font-bold text-white shadow-lg"><i class="fas fa-headset w-8 text-center text-yellow-400 animate-pulse"></i> <span data-key="menuSupport">Support Center</span></button></div>
-                
                 <div id="menu-admin" class="hidden">
                     <div class="mt-8 mb-3 px-4 text-[10px] font-bold uppercase text-slate-500 tracking-widest" data-key="menuMgmt">Management</div>
                     <button onclick="app.router('team')" id="nav-team" class="w-full flex items-center px-4 py-3.5 rounded-xl hover:bg-slate-800 transition group font-medium text-sm"><i class="fas fa-users w-8 text-center group-hover:text-green-400 transition"></i> <span data-key="menuTeam">Team & HR</span></button>
@@ -130,320 +112,99 @@
     <div id="modal-ticket" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col apple-card">
             <div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-xl" id="modal-ticket-title">New Request</h3><button onclick="app.closeModal('ticket')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button></div>
-            <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-8 space-y-6 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="ticket-id"><div id="field-client-details" class="hidden space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider" data-key="contactDetails">Contact Details</p><div class="space-y-3"><input type="text" id="ticket-client-manual" class="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name"><div class="flex gap-3"><input type="text" id="ticket-client-phone" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone"><input type="text" id="ticket-client-email" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email"></div></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="dept">Department</label><select id="ticket-dept" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="Normal">Normal (48h)</option><option value="Urgent">🚨 Urgent (ASAP)</option></select></div></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="desc">Description</label><textarea id="ticket-desc" required class="w-full p-4 bg-white border border-gray-200 rounded-2xl h-32 text-sm resize-none focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"></textarea></div><button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Ticket</button></form>
+            <form onsubmit="event.preventDefault(); app.saveTicket();" class="p-8 space-y-6 bg-gray-50/50 overflow-y-auto"><input type="hidden" id="ticket-id"><div id="field-client-details" class="hidden space-y-3 bg-white p-5 rounded-2xl border border-gray-100 shadow-sm"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider" data-key="contactDetails">Contact Details</p><div class="space-y-3"><input type="text" id="ticket-client-manual" class="w-full p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Client Name"><div class="flex gap-3"><input type="text" id="ticket-client-phone" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Phone"><input type="text" id="ticket-client-email" class="w-1/2 p-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Email"></div></div></div><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="dept">Department</label><select id="ticket-dept" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="SMART">🏠 D2 Smart Home</option><option value="HVAC">❄️ D2 HVAC</option><option value="IT">💻 All Cabling Tech</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="priority">Priority</label><select id="ticket-priority" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"><option value="Normal">Normal (48h)</option><option value="Urgent">🚨 Urgent (ASAP)</option></select></div></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1" data-key="desc">Description</label><textarea id="ticket-desc" required class="w-full p-4 bg-white border border-gray-200 rounded-2xl h-32 text-sm resize-none focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"></textarea></div>
+            <div id="finance-section" class="hidden bg-slate-100 p-5 rounded-2xl border border-slate-200"><p class="text-xs font-bold text-slate-800 uppercase mb-3 flex items-center justify-between"><span><i class="fas fa-file-invoice-dollar mr-1"></i> Admin Finance Audit</span><span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded">VERIFICATION REQUIRED</span></p><div class="grid grid-cols-2 gap-3"><div><label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Status</label><select id="ticket-pay-status" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700"><option value="Pending">🔴 Pending</option><option value="Paid">🟢 Paid</option><option value="Refunded">⚫ Refunded</option></select></div><div><label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Method</label><select id="ticket-pay-method" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-700"><option value="Stripe">💳 Stripe</option><option value="Zelle">🟣 Zelle</option><option value="Cash">💵 Cash</option><option value="Check">📝 Check</option><option value="Other">Other</option></select></div><div><label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Amount ($)</label><input type="number" id="ticket-pay-amount" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs" placeholder="0.00"></div><div class="col-span-2"><label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Notes / TX ID</label><input type="text" id="ticket-pay-ref" class="w-full p-2 bg-white border border-slate-300 rounded-lg text-xs" placeholder="e.g. Received by Tech"></div></div></div>
+            <button type="submit" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition transform active:scale-95" data-key="saveBtn">Save Ticket</button></form>
         </div>
     </div>
 
-    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col apple-card">
-            <div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0">
-                <h3 class="text-slate-800 font-bold text-xl">Profile Management</h3>
-                <button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="overflow-y-auto flex-1">
-                <div id="user-ro-warning" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 m-6 mb-0">
-                    <div class="flex">
-                        <div class="flex-shrink-0"><i class="fas fa-lock text-yellow-400"></i></div>
-                        <div class="ml-3"><p class="text-sm text-yellow-700 font-bold">Read-Only Mode</p><p class="text-xs text-yellow-600">Contact Admin to edit profile details.</p></div>
-                    </div>
-                </div>
-                <form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50">
-                    <input type="hidden" id="user-id">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2">Company / Organization</label><input type="text" id="new-user-company" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm" placeholder="e.g. Hotel Plaza"></div>
-                        <div id="field-role-container"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Company Admin</option><option value="super_admin" id="opt-super-admin" class="hidden">Super Admin (General)</option></select></div>
-                        <div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div>
-                        <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div>
-                    </div>
-                    <button type="submit" id="btn-save-profile" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition" data-key="saveBtn">Save Profile Data</button>
-                </form>
-                <div id="client-vault-section" class="px-8 pb-8 bg-white border-t border-gray-100 hidden">
-                    <div class="pt-6 mb-4 flex justify-between items-center"><h4 class="text-lg font-bold text-slate-800"><i class="fas fa-vault text-blue-500 mr-2"></i> Client Vault</h4><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Active</span></div>
-                    <div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100"><textarea id="vault-input" class="w-full bg-white border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 mb-3" placeholder="Add note, password, or device info..." rows="2"></textarea><div class="flex justify-between items-center"><div class="flex gap-2"><button type="button" onclick="app.setNoteType('general')" class="px-3 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-600 hover:bg-gray-300">📝 General</button><button type="button" onclick="app.setNoteType('password')" class="px-3 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200">🔐 Password</button><button type="button" onclick="app.setNoteType('device')" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-600 hover:bg-blue-200">📱 Device</button><button type="button" onclick="app.setNoteType('network')" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-600 hover:bg-purple-200">🛜 Network</button></div><button onclick="app.addClientNote()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Save Entry</button></div><input type="hidden" id="vault-type" value="general"></div><div id="vault-list" class="space-y-3 max-h-60 overflow-y-auto pr-2"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="modal-user" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col apple-card"><div class="bg-white px-8 py-6 flex justify-between items-center border-b border-gray-100 flex-shrink-0"><h3 class="text-slate-800 font-bold text-xl">Profile Management</h3><button onclick="app.closeModal('user')" class="bg-gray-100 text-gray-500 hover:bg-gray-200 p-2 rounded-full w-8 h-8 flex items-center justify-center transition"><i class="fas fa-times"></i></button></div><div class="overflow-y-auto flex-1"><div id="user-ro-warning" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-4 m-6 mb-0"><div class="flex"><div class="flex-shrink-0"><i class="fas fa-lock text-yellow-400"></i></div><div class="ml-3"><p class="text-sm text-yellow-700 font-bold">Read-Only Mode</p><p class="text-xs text-yellow-600">Contact Admin to edit.</p></div></div></div><form onsubmit="event.preventDefault(); app.saveUser();" class="p-8 space-y-5 bg-gray-50/50"><input type="hidden" id="user-id"><div class="grid grid-cols-1 md:grid-cols-2 gap-5"><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="fullName">Full Name</label><input type="text" id="new-user-name" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2">Company / Organization</label><input type="text" id="new-user-company" list="company-list" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm" placeholder="Select or type company..."><datalist id="company-list"><option value="D2 Group"><option value="D2 Smart Home"><option value="D2 HVAC Solutions"><option value="All Cabling Tech"></datalist></div><div id="field-role-container"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="role">Role</label><select id="new-user-role" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"><option value="client">Client</option><option value="hvac_tech">HVAC Tech</option><option value="smart_tech">Smart Home Tech</option><option value="admin">Company Admin</option><option value="super_admin" id="opt-super-admin" class="hidden">Super Admin</option></select></div><div><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="emailLabel">Email</label><input type="email" id="new-user-email" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm"></div><div class="md:col-span-2"><label class="block text-xs font-bold text-slate-500 uppercase mb-2" data-key="passLabel">Password</label><input type="text" id="new-user-pass" required class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-slate-600 font-mono"></div></div><button type="submit" id="btn-save-profile" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 shadow-lg text-sm transition" data-key="saveBtn">Save Profile Data</button></form><div id="client-vault-section" class="px-8 pb-8 bg-white border-t border-gray-100 hidden"><div class="pt-6 mb-4 flex justify-between items-center"><h4 class="text-lg font-bold text-slate-800"><i class="fas fa-vault text-blue-500 mr-2"></i> Client Vault</h4><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Active</span></div><div class="bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100"><textarea id="vault-input" class="w-full bg-white border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-500 mb-3" placeholder="Add note, password, or device info..." rows="2"></textarea><div class="flex justify-between items-center"><div class="flex gap-2"><button type="button" onclick="app.setNoteType('general')" class="px-3 py-1 rounded-lg text-xs font-bold bg-gray-200 text-gray-600 hover:bg-gray-300">📝 General</button><button type="button" onclick="app.setNoteType('password')" class="px-3 py-1 rounded-lg text-xs font-bold bg-red-100 text-red-600 hover:bg-red-200">🔐 Password</button><button type="button" onclick="app.setNoteType('device')" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-100 text-blue-600 hover:bg-blue-200">📱 Device</button><button type="button" onclick="app.setNoteType('network')" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-100 text-purple-600 hover:bg-purple-200">🛜 Network</button></div><button onclick="app.addClientNote()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700">Save Entry</button></div><input type="hidden" id="vault-type" value="general"></div><div id="vault-list" class="space-y-3 max-h-60 overflow-y-auto pr-2"></div></div></div></div></div>
 
-    <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold"><i class="fas fa-cog mr-2"></i> Settings</h3><button onclick="app.closeModal('settings')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-5"><p class="text-xs text-gray-500 mb-2 leading-relaxed">Set the support numbers for your clients. Always include the country code (e.g. 1 for USA, 55 for Brazil).</p><div><label class="block text-xs font-bold uppercase text-green-600 mb-2"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label><input type="text" id="setting-whatsapp" class="w-full p-3 bg-green-50 border border-green-100 rounded-xl text-sm font-mono text-green-800" placeholder="e.g. 15615550199"></div><div><label class="block text-xs font-bold uppercase text-blue-600 mb-2"><i class="fas fa-phone mr-1"></i> Phone Number</label><input type="text" id="setting-phone" class="w-full p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm font-mono text-blue-800" placeholder="e.g. 15615550199"></div><button type="submit" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 text-sm shadow-md">Save Configuration</button></form></div></div>
-    <div id="modal-support" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden pb-8 apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-lg">Support Center</h3><button onclick="app.closeModal('support')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><div class="p-8 space-y-4 text-center"><div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-2 text-blue-500 text-2xl shadow-inner"><i class="fas fa-headset"></i></div><p class="text-sm text-gray-600 mb-6 font-medium">Need help? Choose a method below:</p><a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#20bd5a] transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp</a><a id="btn-phone" href="#" class="block w-full bg-white text-slate-700 border-2 border-slate-100 font-bold py-4 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3 transform active:scale-95"><i class="fas fa-phone-alt text-xl text-slate-400"></i> Call Support</a></div></div></div>
+    <div id="modal-settings" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"><div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold"><i class="fas fa-cog mr-2"></i> System Settings</h3><button onclick="app.closeModal('settings')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><form onsubmit="event.preventDefault(); app.saveSettings();" class="p-6 space-y-5"><p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Communication</p><div><label class="block text-xs font-bold uppercase text-green-600 mb-1"><i class="fab fa-whatsapp mr-1"></i> WhatsApp Number</label><input type="text" id="setting-whatsapp" class="w-full p-3 bg-gray-50 border border-green-100 rounded-xl text-sm font-mono text-green-800" placeholder="e.g. 15615550199"></div><div><label class="block text-xs font-bold uppercase text-blue-600 mb-1"><i class="fas fa-phone mr-1"></i> Phone Number</label><input type="text" id="setting-phone" class="w-full p-3 bg-blue-50 border border-blue-100 rounded-xl text-sm font-mono text-blue-800" placeholder="e.g. 15615550199"></div><div class="border-t border-gray-100 my-2"></div><p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Payment Links</p><div><label class="block text-xs font-bold uppercase text-slate-700 mb-1">HVAC Link</label><input type="text" id="setting-stripe-hvac" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm" placeholder="https://buy.stripe.com/..."></div><div><label class="block text-xs font-bold uppercase text-slate-700 mb-1">Smart Home Link</label><input type="text" id="setting-stripe-smart" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm" placeholder="https://buy.stripe.com/..."></div><button type="submit" class="w-full bg-slate-800 text-white font-bold py-3.5 rounded-xl hover:bg-slate-700 text-sm shadow-md">Save Configuration</button></form></div></div>
+    <div id="modal-support" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"><div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden pb-8 apple-card"><div class="bg-white px-6 py-5 flex justify-between items-center border-b border-gray-100"><h3 class="text-slate-800 font-bold text-lg">Support Center</h3><button onclick="app.closeModal('support')" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button></div><div class="p-8 space-y-4 text-center"><a id="btn-whatsapp" href="#" target="_blank" class="block w-full bg-[#25D366] text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-[#20bd5a] transition flex items-center justify-center gap-3"><i class="fab fa-whatsapp text-2xl"></i> Chat on WhatsApp</a><a id="btn-phone" href="#" class="block w-full bg-white text-slate-700 border-2 border-slate-100 font-bold py-4 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3"><i class="fas fa-phone-alt text-xl text-slate-400"></i> Call Support</a></div></div></div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg",
-            authDomain: "d2-group-system.firebaseapp.com",
-            projectId: "d2-group-system",
-            storageBucket: "d2-group-system.firebasestorage.app",
-            messagingSenderId: "481760052668",
-            appId: "1:481760052668:web:d5e4ef847b34edf9a297b9",
-            measurementId: "G-XCMX01GQPV"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const firebaseConfig = { apiKey: "AIzaSyCfF0AtNzWZfD40lpczj0Lcm_SBChVlKFg", authDomain: "d2-group-system.firebaseapp.com", projectId: "d2-group-system", storageBucket: "d2-group-system.firebasestorage.app", messagingSenderId: "481760052668", appId: "1:481760052668:web:d5e4ef847b34edf9a297b9", measurementId: "G-XCMX01GQPV" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-        const i18n = {
-            en: { 
-                portalTitle: "Enterprise Portal", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support Center", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Actions", actionSub: "Create new requests for HVAC or Smart Home services.", newTicket: "New Ticket", ticketHist: "History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)",
-                statusOpen: "Open", statusInProgress: "In Progress", statusPending: "Parts Pending", statusCompleted: "Completed", assignTech: "Assign Tech"
-            },
-            pt: { 
-                portalTitle: "Portal Corporativo", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Central de Ajuda", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Ações", actionSub: "Crie novas solicitações para serviços HVAC ou Smart Home.", newTicket: "Novo Chamado", ticketHist: "Histórico", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)",
-                statusOpen: "Aberto", statusInProgress: "Em Andamento", statusPending: "Aguardando Peças", statusCompleted: "Concluído", assignTech: "Atribuir Técnico"
-            },
-            es: { 
-                portalTitle: "Portal Empresarial", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Centro de Ayuda", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Acciones", actionSub: "Cree nuevas solicitudes para servicios HVAC o Smart Home.", newTicket: "Nuevo Ticket", ticketHist: "Historial", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)",
-                statusOpen: "Abierto", statusInProgress: "En Progreso", statusPending: "Piezas Pendientes", statusCompleted: "Completado", assignTech: "Asignar Técnico"
-            }
-        };
+        const i18n = { en: { portalTitle: "Enterprise Portal", emailLabel: "Corporate Email", passLabel: "Password", loginBtn: "ACCESS SYSTEM", menuDash: "Dashboard", menuTickets: "Tickets", menuMgmt: "Management", menuTeam: "Team & HR", menuClients: "Clients CRM", menuSettings: "Settings", menuSupport: "Support Center", logout: "Logout", openTickets: "Open Tickets", urgent: "Urgent", totalUsers: "Total Users", actionPanel: "Actions", actionSub: "Create new requests for HVAC or Smart Home services.", newTicket: "New Ticket", ticketHist: "History", noTickets: "No tickets found.", complete: "Complete", edit: "Edit", teamMgmt: "Team Management", add: "Add", clientDir: "Client Directory", remove: "Remove", clientName: "Client Name", dept: "Department", priority: "Priority", desc: "Description", saveBtn: "Save Data", fullName: "Full Name", role: "Role", contactDetails: "Client Contact Details (Manual Entry)", statusOpen: "Open", statusInProgress: "In Progress", statusPending: "Parts Pending", statusCompleted: "Completed", assignTech: "Assign Tech" }, pt: { portalTitle: "Portal Corporativo", emailLabel: "Email Corporativo", passLabel: "Senha", loginBtn: "ACESSAR SISTEMA", menuDash: "Visão Geral", menuTickets: "Chamados", menuMgmt: "Gestão", menuTeam: "Time & RH", menuClients: "Clientes CRM", menuSettings: "Configurações", menuSupport: "Central de Ajuda", logout: "Sair", openTickets: "Chamados Abertos", urgent: "Urgente", totalUsers: "Total Usuários", actionPanel: "Ações", actionSub: "Crie novas solicitações para serviços HVAC ou Smart Home.", newTicket: "Novo Chamado", ticketHist: "Histórico", noTickets: "Nenhum chamado encontrado.", complete: "Concluir", edit: "Editar", teamMgmt: "Gestão de Equipe", add: "Adicionar", clientDir: "Diretório de Clientes", remove: "Remover", clientName: "Nome do Cliente", dept: "Departamento", priority: "Prioridade", desc: "Descrição", saveBtn: "Salvar Dados", fullName: "Nome Completo", role: "Cargo", contactDetails: "Contatos do Cliente (Entrada Manual)", statusOpen: "Aberto", statusInProgress: "Em Andamento", statusPending: "Aguardando Peças", statusCompleted: "Concluído", assignTech: "Atribuir Técnico" }, es: { portalTitle: "Portal Empresarial", emailLabel: "Email Corporativo", passLabel: "Contraseña", loginBtn: "ACCEDER AL SISTEMA", menuDash: "Tablero", menuTickets: "Tickets", menuMgmt: "Gestión", menuTeam: "Equipo & RRHH", menuClients: "Clientes CRM", menuSettings: "Ajustes", menuSupport: "Centro de Ayuda", logout: "Salir", openTickets: "Tickets Abiertos", urgent: "Urgente", totalUsers: "Usuarios Totales", actionPanel: "Acciones", actionSub: "Cree nuevas solicitudes para servicios HVAC o Smart Home.", newTicket: "Nuevo Ticket", ticketHist: "Historial", noTickets: "No se encontraron tickets.", complete: "Completar", edit: "Editar", teamMgmt: "Gestión de Equipo", add: "Agregar", clientDir: "Directorio de Clientes", remove: "Eliminar", clientName: "Nombre Cliente", dept: "Departamento", priority: "Prioridad", desc: "Descripción", saveBtn: "Guardar Datos", fullName: "Nombre Completo", role: "Rol", contactDetails: "Detalles de Contacto (Entrada Manual)", statusOpen: "Abierto", statusInProgress: "En Progreso", statusPending: "Piezas Pendientes", statusCompleted: "Completado", assignTech: "Asignar Técnico" } };
 
         const app = {
-            lang: 'en',
-            data: { users: [], tickets: [], settings: { whatsapp: '', phone: '' }, currentUser: null, currentFilter: null },
-            sidebarOpen: false,
-
-            init: async function() {
-                await this.syncFromCloud();
-                // 1. UPDATE DEFAULT USER TO DANTE FROTA
-                if (this.data.users.length === 0) {
-                    this.data.users = [{ id: 1, name: "Dante Frota", email: "dante.frota@allcablingtech.com", pass: "Newlife2022", role: "super_admin", company: "D2 Group" }];
-                    this.saveToCloud();
-                }
-                const sessionUser = sessionStorage.getItem('d2_session');
-                if (sessionUser) {
-                    this.data.currentUser = JSON.parse(sessionUser);
-                    this.loadInterface();
-                } else {
-                    document.getElementById('view-auth').classList.remove('hidden');
-                }
-                this.updateLangUI();
-            },
-
-            // 2. HELPER FOR INITIALS
-            getInitials: function(name) {
-                if(!name) return '??';
-                return name.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase().substring(0,2);
-            },
-
-            toggleSidebar: function() {
-                this.sidebarOpen = !this.sidebarOpen;
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('mobile-overlay');
-                if (this.sidebarOpen) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
-                else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
-            },
-
-            syncFromCloud: async function() {
-                document.getElementById('loading-overlay').classList.remove('hidden');
-                try {
-                    const doc = await db.collection('app_data').doc('company_state').get();
-                    if (doc.exists) {
-                        const cloudData = doc.data();
-                        this.data.users = cloudData.users || [];
-                        this.data.tickets = cloudData.tickets || [];
-                        this.data.settings = cloudData.settings || { whatsapp: '', phone: '' };
-                    }
-                } catch (error) { console.warn("Offline/Config Error:", error); }
-                document.getElementById('loading-overlay').classList.add('hidden');
-            },
-
-            saveToCloud: async function() {
-                try {
-                    await db.collection('app_data').doc('company_state').set({
-                        users: this.data.users,
-                        tickets: this.data.tickets,
-                        settings: this.data.settings,
-                        lastUpdate: new Date().toISOString()
-                    });
-                } catch (e) { console.error("Save Error", e); }
-            },
-
-            setLang: function(l) {
-                this.lang = l;
-                document.querySelectorAll('.flag-icon').forEach(f => f.classList.remove('flag-active'));
-                document.getElementById(`flag-${l}`).classList.add('flag-active');
-                this.updateLangUI();
-                if(this.data.currentUser) this.router('dashboard');
-            },
-            updateLangUI: function() {
-                document.querySelectorAll('[data-key]').forEach(el => {
-                    const key = el.getAttribute('data-key');
-                    if(i18n[this.lang][key]) el.innerText = i18n[this.lang][key];
-                });
-                if(document.getElementById('ticket-client-manual')) document.getElementById('ticket-client-manual').placeholder = i18n[this.lang].clientName;
-            },
+            lang: 'en', data: { users: [], tickets: [], settings: { whatsapp: '', phone: '', stripeHvac: '', stripeSmart: '' }, currentUser: null, currentFilter: null }, sidebarOpen: false,
+            init: async function() { await this.syncFromCloud(); const dante = this.data.users.find(u => u.email === 'dante.frota@allcablingtech.com'); if (dante) { dante.name = "Dante Frota"; dante.role = "super_admin"; dante.company = "D2 Group"; } else if (this.data.users.length === 0) { this.data.users = [{ id: 1, name: "Dante Frota", email: "dante.frota@allcablingtech.com", pass: "Newlife2022", role: "super_admin", company: "D2 Group" }]; } if(!this.data.settings.stripeHvac) this.data.settings.stripeHvac = "https://buy.stripe.com/28EfZh2So93v0SD6gz4Ja00"; if(!this.data.settings.stripeSmart) this.data.settings.stripeSmart = "https://buy.stripe.com/aFa8wPb6AfjVbwpcuB6sw02"; this.saveToCloud(); const sessionUser = sessionStorage.getItem('d2_session'); if (sessionUser) { this.data.currentUser = JSON.parse(sessionUser); this.loadInterface(); } else { document.getElementById('view-auth').classList.remove('hidden'); } this.updateLangUI(); },
+            getInitials: function(name) { if(!name) return '??'; return name.match(/(\b\S)?/g).join("").match(/(^\S|\S$)?/g).join("").toUpperCase().substring(0,2); },
+            toggleSidebar: function() { this.sidebarOpen = !this.sidebarOpen; const sb = document.getElementById('sidebar'); const ov = document.getElementById('mobile-overlay'); if (this.sidebarOpen) { sb.classList.remove('-translate-x-full'); ov.classList.remove('hidden'); } else { sb.classList.add('-translate-x-full'); ov.classList.add('hidden'); } },
+            syncFromCloud: async function() { document.getElementById('loading-overlay').classList.remove('hidden'); try { const doc = await db.collection('app_data').doc('company_state').get(); if (doc.exists) { const d = doc.data(); this.data.users = d.users || []; this.data.tickets = d.tickets || []; this.data.settings = d.settings || { whatsapp: '', phone: '', stripeHvac: '', stripeSmart: '' }; } } catch (e) { console.warn(e); } document.getElementById('loading-overlay').classList.add('hidden'); },
+            saveToCloud: async function() { try { await db.collection('app_data').doc('company_state').set({ users: this.data.users, tickets: this.data.tickets, settings: this.data.settings, lastUpdate: new Date().toISOString() }); } catch (e) { console.error(e); } },
+            setLang: function(l) { this.lang = l; document.querySelectorAll('.flag-icon').forEach(f => f.classList.remove('flag-active')); document.getElementById(`flag-${l}`).classList.add('flag-active'); this.updateLangUI(); if(this.data.currentUser) this.router('dashboard'); },
+            updateLangUI: function() { document.querySelectorAll('[data-key]').forEach(el => { const k = el.getAttribute('data-key'); if(i18n[this.lang][k]) el.innerText = i18n[this.lang][k]; }); if(document.getElementById('ticket-client-manual')) document.getElementById('ticket-client-manual').placeholder = i18n[this.lang].clientName; },
             t: function(key) { return i18n[this.lang][key] || key; },
-
-            login: function() {
-                const email = document.getElementById('login-email').value.trim();
-                const pass = document.getElementById('login-pass').value.trim();
-                const user = this.data.users.find(u => u.email === email && u.pass === pass);
-                if (user) {
-                    this.data.currentUser = user;
-                    sessionStorage.setItem('d2_session', JSON.stringify(user));
-                    document.getElementById('view-auth').classList.add('hidden');
-                    this.loadInterface();
-                } else { alert('Invalid Credentials'); }
-            },
+            login: function() { const e = document.getElementById('login-email').value.trim(); const p = document.getElementById('login-pass').value.trim(); const u = this.data.users.find(u => u.email === e && u.pass === p); if (u) { this.data.currentUser = u; sessionStorage.setItem('d2_session', JSON.stringify(u)); document.getElementById('view-auth').classList.add('hidden'); this.loadInterface(); } else { alert('Invalid Credentials'); } },
             logout: function() { sessionStorage.removeItem('d2_session'); location.reload(); },
-
-            loadInterface: function() {
-                document.getElementById('view-main').classList.remove('hidden');
-                const user = this.data.currentUser;
-                document.getElementById('user-display-name').innerText = user.name;
-                document.getElementById('user-display-company').innerText = user.company || 'Unknown';
-                
-                // SET AVATAR
-                document.getElementById('user-avatar').innerText = this.getInitials(user.name);
-
-                document.getElementById('menu-admin').classList.add('hidden');
-                document.getElementById('menu-client').classList.add('hidden');
-                
-                if (user.role === 'super_admin') {
-                    document.getElementById('menu-admin').classList.remove('hidden');
-                    document.getElementById('env-badge').innerText = 'SUPER ADMIN';
-                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-purple-400 mb-4 border border-purple-900/30';
-                } else if (user.role === 'admin') {
-                    document.getElementById('menu-admin').classList.remove('hidden');
-                    document.getElementById('env-badge').innerText = 'COMPANY ADMIN';
-                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-green-400 mb-4 border border-green-900/30';
-                } else if (user.role === 'client') {
-                    document.getElementById('menu-client').classList.remove('hidden');
-                    document.getElementById('env-badge').innerText = 'CLIENT PORTAL';
-                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-blue-900/30';
-                } else {
-                    document.getElementById('env-badge').innerText = 'TECH PANEL';
-                    document.getElementById('env-badge').className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-orange-400 mb-4 border border-orange-900/30';
-                }
-
-                this.router('dashboard');
-                this.updateBadge();
-            },
+            loadInterface: function() { document.getElementById('view-main').classList.remove('hidden'); const u = this.data.currentUser; document.getElementById('user-display-name').innerText = u.name; document.getElementById('user-display-company').innerText = u.company || 'Unknown'; document.getElementById('user-avatar').innerText = this.getInitials(u.name); document.getElementById('menu-admin').classList.add('hidden'); document.getElementById('menu-client').classList.add('hidden'); const badge = document.getElementById('env-badge'); if (u.role === 'super_admin') { document.getElementById('menu-admin').classList.remove('hidden'); badge.innerText = 'SUPER ADMIN'; badge.className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-purple-400 mb-4 border border-purple-900/30'; } else if (u.role === 'admin') { document.getElementById('menu-admin').classList.remove('hidden'); badge.innerText = 'COMPANY ADMIN'; badge.className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-green-400 mb-4 border border-green-900/30'; } else if (u.role === 'client') { document.getElementById('menu-client').classList.remove('hidden'); badge.innerText = 'CLIENT PORTAL'; badge.className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-blue-400 mb-4 border border-blue-900/30'; } else { badge.innerText = 'TECH PANEL'; badge.className = 'text-[10px] font-bold uppercase tracking-widest bg-slate-800 px-3 py-1 rounded-full text-orange-400 mb-4 border border-orange-900/30'; } this.router('dashboard'); this.updateBadge(); },
+            router: function(page, filterParam = null) { if(this.sidebarOpen && window.innerWidth < 768) this.toggleSidebar(); document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('sidebar-active', 'bg-slate-800')); const activeBtn = document.getElementById(`nav-${page}`); if(activeBtn) activeBtn.classList.add('sidebar-active'); let pt = this.t(page === 'dashboard' ? 'menuDash' : (page === 'tickets' ? 'menuTickets' : (page === 'team' ? 'menuTeam' : 'menuClients'))); if (filterParam) { this.currentFilter = filterParam; pt += ` (${filterParam})`; } else { this.currentFilter = null; } document.getElementById('page-title').innerText = pt; const c = document.getElementById('app-content'); c.innerHTML = ''; if (page === 'dashboard') this.renderDashboard(c); else if (page === 'tickets') this.renderTickets(c); else if (page === 'team') this.renderUserList(c, 'team'); else if (page === 'clients') this.renderUserList(c, 'client'); this.updateLangUI(); },
+            filterByDept: function(dept) { this.router('tickets', dept); },
+            getStatusLabel: function(s) { if (s === 'Open') return this.t('statusOpen'); if (s === 'In Progress') return this.t('statusInProgress'); if (s === 'Pending') return this.t('statusPending'); if (s === 'Completed') return this.t('statusCompleted'); return s; },
+            filterByCompany: function(list) { const u = this.data.currentUser; if (u.role === 'super_admin') return list; return list.filter(i => i.company === u.company); },
             
-            // 3. UPDATED ROUTER TO ACCEPT FILTER PARAMS
-            router: function(page, filterParam = null) {
-                if(this.sidebarOpen && window.innerWidth < 768) this.toggleSidebar();
-                document.querySelectorAll('aside button').forEach(btn => btn.classList.remove('sidebar-active', 'bg-slate-800'));
-                const activeBtn = document.getElementById(`nav-${page}`);
-                if(activeBtn) activeBtn.classList.add('sidebar-active');
-                
-                let pageTitle = this.t(page === 'dashboard' ? 'menuDash' : (page === 'tickets' ? 'menuTickets' : (page === 'team' ? 'menuTeam' : 'menuClients')));
-                
-                // If filter param exists (e.g. from Logo Click)
-                if (filterParam) {
-                    this.currentFilter = filterParam;
-                    pageTitle += ` (${filterParam})`;
-                } else {
-                    this.currentFilter = null;
-                }
-
-                document.getElementById('page-title').innerText = pageTitle;
-                
-                const container = document.getElementById('app-content');
-                container.innerHTML = '';
-                if (page === 'dashboard') this.renderDashboard(container);
-                else if (page === 'tickets') this.renderTickets(container);
-                else if (page === 'team') this.renderUserList(container, 'team');
-                else if (page === 'clients') this.renderUserList(container, 'client');
-                this.updateLangUI();
-            },
-            
-            // 4. SHORTCUT ACTION: FILTER BY DEPT
-            filterByDept: function(dept) {
-                // Navigate to tickets page with a filter applied
-                this.router('tickets', dept);
-            },
-            
-            getStatusLabel: function(status) {
-                if (status === 'Open') return this.t('statusOpen');
-                if (status === 'In Progress') return this.t('statusInProgress');
-                if (status === 'Pending') return this.t('statusPending');
-                if (status === 'Completed') return this.t('statusCompleted');
-                return status;
-            },
-
-            filterByCompany: function(list) {
-                const user = this.data.currentUser;
-                if (user.role === 'super_admin') return list; 
-                return list.filter(item => item.company === user.company);
-            },
-
-            // 5. DASHBOARD WITH CLICKABLE LOGOS
+            // --- NEW: INTERACTIVE DASHBOARD ---
             renderDashboard: function(c) {
-                 const myTickets = this.filterByCompany(this.data.tickets);
-                 const active = myTickets.filter(t => t.status !== 'Completed').length;
-                 const urgent = myTickets.filter(t => t.priority === 'Urgent' && t.status !== 'Completed').length;
-                 
-                 c.innerHTML = `
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div>
-                        <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div>
-                    </div>
-                    <div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500">
-                        <div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div>
-                        <div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div>
-                    </div>
-                 </div>
-                 
-                 <div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                    <div class="relative z-10 text-center md:text-left">
-                        <div>
-                            <h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2>
-                            <p class="text-slate-400 text-sm mb-4" data-key="actionSub">Select a department to view requests:</p>
-                            <div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm">
-                                <img src="logo-hvac.png" class="logo-btn" onclick="app.filterByDept('HVAC')" title="View HVAC Tickets" onerror="this.style.display='none'">
-                                <div class="h-6 w-px bg-gray-500 opacity-50"></div>
-                                <img src="logo-smart.png" class="logo-btn" onclick="app.filterByDept('SMART')" title="View Smart Home Tickets" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                    </div>
-                    <button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button>
-                 </div>`;
+                 if (this.currentFilter) {
+                     // COMPANY VIEW (Command Center)
+                     const companyName = this.currentFilter === 'HVAC' ? 'D2 HVAC Solutions' : 'D2 Smart Home';
+                     const targetTickets = this.data.tickets.filter(t => t.dept === this.currentFilter);
+                     const totalRevenue = targetTickets.filter(t => t.paymentStatus === 'Paid').reduce((sum, t) => sum + (parseFloat(t.paymentAmount) || 0), 0);
+                     const pendingRevenue = targetTickets.filter(t => t.status === 'Completed' && t.paymentStatus !== 'Paid').length;
+                     const activeTechs = this.data.users.filter(u => u.role.includes('tech') && (this.currentFilter === 'HVAC' ? u.role === 'hvac_tech' : u.role === 'smart_tech'));
+
+                     c.innerHTML = `
+                     <div class="mb-6 flex justify-between items-center"><button onclick="app.router('dashboard')" class="bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-lg font-bold text-xs transition"><i class="fas fa-arrow-left mr-2"></i> Back to Global</button><h2 class="text-xl font-bold text-slate-800">${companyName} Overview</h2></div>
+                     
+                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div onclick="app.router('tickets', '${this.currentFilter}')" class="apple-card p-6 border-l-4 border-green-500 hover:scale-[1.02] transition"><p class="text-xs font-bold text-green-600 uppercase tracking-wider">Total Revenue Collected</p><p class="text-3xl font-bold text-slate-800 mt-1">$${totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2})}</p></div>
+                        <div onclick="app.router('tickets', '${this.currentFilter}')" class="apple-card p-6 border-l-4 border-yellow-500 hover:scale-[1.02] transition"><p class="text-xs font-bold text-yellow-600 uppercase tracking-wider">Pending Payments</p><p class="text-3xl font-bold text-slate-800 mt-1">${pendingRevenue} <span class="text-sm font-normal text-gray-400">orders</span></p></div>
+                        <div onclick="app.router('team', '${this.currentFilter}')" class="apple-card p-6 border-l-4 border-blue-500 hover:scale-[1.02] transition"><p class="text-xs font-bold text-blue-600 uppercase tracking-wider">Active Techs</p><p class="text-3xl font-bold text-slate-800 mt-1">${activeTechs.length}</p></div>
+                     </div>
+
+                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div><h3 class="font-bold text-slate-700 mb-4">Active Team</h3><div class="space-y-3">${activeTechs.map(t => `<div onclick="app.editUser(${t.id})" class="bg-white p-4 rounded-xl shadow-sm flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition"><div class="avatar-circle text-xs">${app.getInitials(t.name)}</div><div><p class="font-bold text-sm text-slate-800">${t.name}</p><p class="text-xs text-gray-500">${t.email}</p></div></div>`).join('') || '<p class="text-gray-400 text-sm">No technicians found.</p>'}</div></div>
+                        <div><h3 class="font-bold text-slate-700 mb-4">Recent Requests</h3><div class="space-y-3">${targetTickets.slice(0, 5).map(t => `<div onclick="app.editTicket(${t.id})" class="bg-white p-4 rounded-xl shadow-sm border-l-4 ${t.status==='Completed'?'border-green-400':'border-blue-400'} cursor-pointer hover:bg-gray-50 transition"><p class="font-bold text-sm text-slate-800 truncate">${t.desc}</p><p class="text-xs text-gray-500 mt-1 flex justify-between"><span>${t.clientName}</span><span>${t.status}</span></p></div>`).join('') || '<p class="text-gray-400 text-sm">No recent activity.</p>'}</div></div>
+                     </div>`;
+                 } else {
+                     // GLOBAL DASHBOARD
+                     const mt = this.filterByCompany(this.data.tickets);
+                     const active = mt.filter(t => t.status !== 'Completed').length;
+                     const urgent = mt.filter(t => t.priority === 'Urgent' && t.status !== 'Completed').length;
+                     c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition"><div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-clipboard-list"></i></div><div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider" data-key="openTickets">Open</p><p class="text-3xl font-bold text-slate-800 mt-1">${active}</p></div></div><div onclick="app.router('tickets')" class="apple-card p-6 flex items-center gap-5 hover:scale-[1.02] transition border-l-4 border-red-500"><div class="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-2xl shadow-sm"><i class="fas fa-exclamation-triangle"></i></div><div><p class="text-xs font-bold text-red-400 uppercase tracking-wider" data-key="urgent">Urgent</p><p class="text-3xl font-bold text-slate-800 mt-1">${urgent}</p></div></div></div><div class="bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-900/20 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"><div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div><div class="relative z-10 text-center md:text-left"><div><h2 class="text-2xl font-bold mb-2" data-key="actionPanel">Actions</h2><p class="text-slate-400 text-sm mb-4" data-key="actionSub">Select a company for full management:</p><div class="brand-pill-dark inline-flex gap-6 px-6 py-3 shadow-sm"><img src="logo-hvac.png" class="logo-btn" onclick="app.router('dashboard', 'HVAC')" title="Manage D2 HVAC" onerror="this.style.display='none'"><div class="h-6 w-px bg-gray-500 opacity-50"></div><img src="logo-smart.png" class="logo-btn" onclick="app.router('dashboard', 'SMART')" title="Manage D2 Smart Home" onerror="this.style.display='none'"></div></div></div><button onclick="app.openTicketModal()" class="relative z-10 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-900/50 transition transform hover:scale-105 w-full md:w-auto"><i class="fas fa-plus mr-2"></i> <span data-key="newTicket">New Ticket</span></button></div>`;
+                 }
             },
             
             renderTickets: function(c) {
-                let list = this.filterByCompany(this.data.tickets);
-                const role = this.data.currentUser.role;
-                
-                // DEPT/ROLE Filtering
-                if(role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email);
-                else if(role === 'hvac_tech') list = list.filter(t => t.dept === 'HVAC');
-                else if(role === 'smart_tech') list = list.filter(t => t.dept === 'SMART');
-                
-                // 6. APPLY LOGO FILTER (If clicked from Dashboard)
-                let filterHtml = '';
-                if (this.currentFilter) {
-                    list = list.filter(t => t.dept === (this.currentFilter === 'SMART' ? 'SMART' : 'HVAC'));
-                    filterHtml = `<div class="mb-4 bg-blue-50 border border-blue-100 text-blue-700 px-4 py-3 rounded-xl flex justify-between items-center">
-                        <span><i class="fas fa-filter mr-2"></i> Filtering by: <strong>${this.currentFilter === 'SMART' ? 'D2 Smart Home' : 'D2 HVAC Solutions'}</strong></span>
-                        <button onclick="app.router('tickets')" class="text-xs font-bold underline hover:text-blue-900">Clear Filter</button>
-                    </div>`;
-                }
-                
+                let list = this.filterByCompany(this.data.tickets); const role = this.data.currentUser.role;
+                if(role === 'client') list = list.filter(t => t.clientEmail === this.data.currentUser.email); else if(role === 'hvac_tech') list = list.filter(t => t.dept === 'HVAC'); else if(role === 'smart_tech') list = list.filter(t => t.dept === 'SMART');
+                let filterHtml = ''; if (this.currentFilter) { list = list.filter(t => t.dept === (this.currentFilter === 'SMART' ? 'SMART' : 'HVAC')); filterHtml = `<div class="mb-4 bg-blue-50 border border-blue-100 text-blue-700 px-4 py-3 rounded-xl flex justify-between items-center"><span><i class="fas fa-filter mr-2"></i> Viewing: <strong>${this.currentFilter === 'SMART' ? 'D2 Smart Home' : 'D2 HVAC Solutions'}</strong></span><button onclick="app.router('tickets')" class="text-xs font-bold underline hover:text-blue-900">Clear Filter</button></div>`; }
                 let html = `${filterHtml}<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="ticketHist">History</h2><button onclick="app.openTicketModal()" class="bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="space-y-6">`;
-                
-                if (list.length === 0) {
-                    html += `<div class="text-center py-10 text-gray-400">No tickets found for this selection.</div>`;
-                }
-
+                if (list.length === 0) html += `<div class="text-center py-10 text-gray-400">No tickets found for this selection.</div>`;
                 list.forEach(t => {
-                    const isUrgent = t.priority === 'Urgent';
-                    const displayStatus = this.getStatusLabel(t.status || 'Open');
-                    const cleanPhone = t.clientPhone ? t.clientPhone.replace(/\D/g, '') : '';
-                    let commBar = '';
-                    if (t.clientPhone || t.clientEmail) {
-                        commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}</div>`;
-                    }
+                    const isUrgent = t.priority === 'Urgent'; const displayStatus = this.getStatusLabel(t.status || 'Open'); const cleanPhone = t.clientPhone ? t.clientPhone.replace(/\D/g, '') : '';
+                    let commBar = ''; if (t.clientPhone || t.clientEmail) { commBar = `<div class="flex gap-3 mt-4 pt-4 border-t border-gray-100">${t.clientPhone ? `<a href="https://wa.me/${cleanPhone}" target="_blank" class="flex-1 bg-green-50 text-green-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-green-100 transition"><i class="fab fa-whatsapp text-sm mr-1"></i> WhatsApp</a>` : ''}${t.clientPhone ? `<a href="tel:${t.clientPhone}" class="flex-1 bg-blue-50 text-blue-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-blue-100 transition"><i class="fas fa-phone text-sm mr-1"></i> Call</a>` : ''}${t.clientEmail ? `<a href="mailto:${t.clientEmail}" class="flex-1 bg-gray-50 text-gray-600 py-2 rounded-lg text-center text-xs font-bold hover:bg-gray-100 transition"><i class="fas fa-envelope text-sm mr-1"></i> Email</a>` : ''}</div>`; }
                     let adminControls = '';
                     if (role === 'admin' || role === 'super_admin') {
-                        let techOptions = `<option value="">-- Assign Tech --</option>`;
-                        this.filterByCompany(this.data.users).filter(u => u.role.includes('tech')).forEach(u => { techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`; });
+                        let techOptions = `<option value="">-- Assign Tech --</option>`; this.filterByCompany(this.data.users).filter(u => u.role.includes('tech')).forEach(u => { techOptions += `<option value="${u.name}" ${t.assignedTech === u.name ? 'selected' : ''}>${u.name}</option>`; });
                         adminControls = `<div class="mt-4 grid grid-cols-2 gap-3"><div><label class="text-[10px] font-bold text-gray-400 uppercase">Status</label><select onchange="app.updateTicketStatus(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer"><option value="Open" ${t.status === 'Open' ? 'selected' : ''}>Open</option><option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option><option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Parts Pending</option><option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option></select></div><div><label class="text-[10px] font-bold text-gray-400 uppercase">Technician</label><select onchange="app.updateTicketTech(${t.id}, this.value)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 custom-select cursor-pointer">${techOptions}</select></div></div>`;
                     } else { if (t.assignedTech) { adminControls = `<div class="mt-3 text-xs text-blue-600 font-bold bg-blue-50 px-3 py-2 rounded-lg inline-block"><i class="fas fa-tools mr-1"></i> Tech Assigned: ${t.assignedTech}</div>`; } }
-
-                    html += `<div class="apple-card p-6 relative group hover:shadow-lg transition"><div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}<span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span></div><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>${role === 'admin' || role === 'super_admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}</div></div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 font-medium mb-2"><i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}</div>${adminControls}${commBar}</div>`;
+                    const pdfButton = `<button onclick="app.generatePDF(${t.id})" class="absolute top-6 right-16 text-slate-300 hover:text-slate-800 transition" title="Generate Invoice"><i class="fas fa-file-invoice"></i></button>`;
+                    let payNowBtn = '';
+                    if (role === 'client' && t.status === 'Completed') {
+                        let payLink = t.dept === 'HVAC' ? this.data.settings.stripeHvac : this.data.settings.stripeSmart;
+                        payNowBtn = `<a href="${payLink}" target="_blank" class="absolute top-6 right-16 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md transition transform hover:scale-105 flex items-center gap-1"><i class="fas fa-credit-card"></i> PAY NOW</a>`;
+                    }
+                    let financeBadge = '';
+                    if ((role === 'admin' || role === 'super_admin')) {
+                        if (t.paymentStatus === 'Paid') { financeBadge = `<span class="absolute top-6 right-16 bg-green-100 text-green-800 text-[10px] font-bold px-2 py-1 rounded-full border border-green-200 flex items-center gap-1"><i class="fas fa-check-circle"></i> PAID (${t.paymentMethod || '?'})</span>`; } 
+                        else if (t.status === 'Completed') { financeBadge = `<span class="absolute top-6 right-16 bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded-full border border-red-200 flex items-center gap-1 animate-pulse"><i class="fas fa-exclamation-circle"></i> UNPAID</span>`; }
+                    }
+                    html += `<div class="apple-card p-6 relative group hover:shadow-lg transition">${role === 'client' ? payNowBtn : (financeBadge || pdfButton)}<div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase bg-slate-100 text-slate-500 px-2 py-1 rounded-lg">${t.dept}</span>${isUrgent ? '<span class="text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded-lg animate-pulse">URGENT</span>' : ''}<span class="text-[10px] font-bold uppercase ${t.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-50 text-yellow-600'} px-2 py-1 rounded-lg">${displayStatus}</span></div><div class="flex gap-2"><button onclick="app.editTicket(${t.id})" class="text-slate-300 hover:text-blue-500 transition"><i class="fas fa-pen"></i></button>${role === 'admin' || role === 'super_admin' ? `<button onclick="app.deleteTicket(${t.id})" class="text-slate-300 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>` : ''}</div></div><h4 class="font-bold text-slate-800 text-lg mb-1">${t.desc}</h4><div class="text-xs text-gray-500 font-medium mb-2"><i class="fas fa-user-circle mr-1 opacity-50"></i> ${t.clientName} <span class="mx-2 opacity-30">|</span> <i class="far fa-clock mr-1 opacity-50"></i> ${t.date}</div>${adminControls}${commBar}</div>`;
                 });
                 c.innerHTML = html + `</div>`;
             },
@@ -451,196 +212,44 @@
             renderUserList: function(c, type) {
                 const list = this.filterByCompany(this.data.users).filter(u => type === 'team' ? u.role !== 'client' : u.role === 'client');
                 let html = `<div class="flex justify-between items-center mb-8"><h2 class="text-xl font-bold text-slate-800 tracking-tight" data-key="${type === 'team' ? 'teamMgmt' : 'clientDir'}">Directory</h2><button onclick="document.getElementById('user-id').value='';document.getElementById('modal-user').classList.remove('hidden')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-slate-800 transition transform hover:scale-105"><i class="fas fa-plus mr-2"></i> <span data-key="add">Add</span></button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">`;
-                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="apple-card p-6 relative group flex items-center gap-5 hover:-translate-y-1 transition"><div class="avatar-circle text-lg bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white shadow-sm shrink-0">${app.getInitials(u.name)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-blue-500 mt-0.5 truncate tracking-wide">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-400 font-medium truncate mt-1">${u.email}</p></div><div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition shadow-sm"><i class="fas fa-trash text-xs"></i></button></div></div>`);
+                list.forEach(u => html += `<div onclick="app.editUser(${u.id})" class="apple-card p-6 relative group flex items-center gap-5 hover:-translate-y-1 transition"><div class="avatar-circle text-lg bg-gradient-to-br from-slate-100 to-slate-200 text-slate-600 border border-white shadow-sm shrink-0">${app.getInitials(u.name)}</div><div class="overflow-hidden"><h4 class="font-bold text-slate-800 truncate">${u.name}</h4><p class="text-[10px] font-bold uppercase text-blue-500 mt-0.5 truncate tracking-wide">${app.getRoleLabel(u.role)}</p><p class="text-xs text-gray-400 font-medium truncate mt-1">${u.email}</p><p class="text-[9px] text-gray-300 font-bold uppercase mt-1 tracking-wider">${u.company || 'No Company'}</p></div><div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition duration-200"><button onclick="event.stopPropagation(); app.deleteUser(${u.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white flex items-center justify-center transition shadow-sm"><i class="fas fa-trash text-xs"></i></button></div></div>`);
                 c.innerHTML = html + `</div>`;
             },
 
             // ACTIONS
-            openSettingsModal: function() {
-                document.getElementById('modal-settings').classList.remove('hidden');
-                document.getElementById('setting-whatsapp').value = this.data.settings.whatsapp || '';
-                document.getElementById('setting-phone').value = this.data.settings.phone || '';
-            },
-            saveSettings: function() {
-                this.data.settings.whatsapp = document.getElementById('setting-whatsapp').value;
-                this.data.settings.phone = document.getElementById('setting-phone').value;
-                this.saveToCloud();
-                this.closeModal('settings');
-                alert('Settings saved!');
-            },
-            openSupportModal: function() {
-                document.getElementById('modal-support').classList.remove('hidden');
-                const rawWa = this.data.settings.whatsapp || '';
-                const cleanWa = rawWa.replace(/\D/g, ''); 
-                const ph = this.data.settings.phone || '';
-                document.getElementById('btn-whatsapp').href = cleanWa ? `https://wa.me/${cleanWa}` : '#';
-                document.getElementById('btn-phone').href = ph ? `tel:${ph}` : '#';
-                if(!cleanWa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none');
-                else document.getElementById('btn-whatsapp').classList.remove('opacity-50', 'pointer-events-none');
-                if(!ph) document.getElementById('btn-phone').classList.add('opacity-50', 'pointer-events-none');
-                else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none');
-            },
+            openSettingsModal: function() { document.getElementById('modal-settings').classList.remove('hidden'); document.getElementById('setting-whatsapp').value = this.data.settings.whatsapp || ''; document.getElementById('setting-phone').value = this.data.settings.phone || ''; document.getElementById('setting-stripe-hvac').value = this.data.settings.stripeHvac || ''; document.getElementById('setting-stripe-smart').value = this.data.settings.stripeSmart || ''; },
+            saveSettings: function() { this.data.settings.whatsapp = document.getElementById('setting-whatsapp').value; this.data.settings.phone = document.getElementById('setting-phone').value; this.data.settings.stripeHvac = document.getElementById('setting-stripe-hvac').value; this.data.settings.stripeSmart = document.getElementById('setting-stripe-smart').value; this.saveToCloud(); this.closeModal('settings'); alert('Settings saved!'); },
+            openSupportModal: function() { document.getElementById('modal-support').classList.remove('hidden'); const rawWa = this.data.settings.whatsapp || ''; const cleanWa = rawWa.replace(/\D/g, ''); const ph = this.data.settings.phone || ''; document.getElementById('btn-whatsapp').href = cleanWa ? `https://wa.me/${cleanWa}` : '#'; document.getElementById('btn-phone').href = ph ? `tel:${ph}` : '#'; if(!cleanWa) document.getElementById('btn-whatsapp').classList.add('opacity-50', 'pointer-events-none'); else document.getElementById('btn-whatsapp').classList.remove('opacity-50', 'pointer-events-none'); if(!ph) document.getElementById('btn-phone').classList.add('opacity-50', 'pointer-events-none'); else document.getElementById('btn-phone').classList.remove('opacity-50', 'pointer-events-none'); },
 
-            saveTicket: function() {
-                const id = document.getElementById('ticket-id').value;
-                const dept = document.getElementById('ticket-dept').value;
-                const desc = document.getElementById('ticket-desc').value;
-                const priority = document.getElementById('ticket-priority').value;
-                const manualName = document.getElementById('ticket-client-manual').value;
-                const manualPhone = document.getElementById('ticket-client-phone').value;
-                const manualEmail = document.getElementById('ticket-client-email').value;
-                let cName = this.data.currentUser.name; let cEmail = this.data.currentUser.email; let cPhone = "";
-                let cCompany = this.data.currentUser.company;
-
-                if (this.data.currentUser.role !== 'client') {
-                    if (!manualName && !id) { alert("Client Name Required"); return; }
-                    cName = manualName; cEmail = manualEmail || "manual@entry"; cPhone = manualPhone || "";
-                }
-                
+            saveTicket: function() { 
+                const id = document.getElementById('ticket-id').value; const dept = document.getElementById('ticket-dept').value; const desc = document.getElementById('ticket-desc').value; const priority = document.getElementById('ticket-priority').value; const manualName = document.getElementById('ticket-client-manual').value; const manualPhone = document.getElementById('ticket-client-phone').value; const manualEmail = document.getElementById('ticket-client-email').value; 
+                const payStatus = document.getElementById('ticket-pay-status').value; const payAmount = document.getElementById('ticket-pay-amount').value; const payRef = document.getElementById('ticket-pay-ref').value; const payMethod = document.getElementById('ticket-pay-method').value;
+                let cName = this.data.currentUser.name; let cEmail = this.data.currentUser.email; let cPhone = ""; let cCompany = this.data.currentUser.company; if (this.data.currentUser.role !== 'client') { if (!manualName && !id) { alert("Client Name Required"); return; } cName = manualName; cEmail = manualEmail || "manual@entry"; cPhone = manualPhone || ""; } 
                 if(id) { 
                     const t = this.data.tickets.find(x => x.id == id); t.dept = dept; t.desc = desc; t.priority = priority; 
-                    if(manualName) { t.clientName = manualName; t.clientEmail = cEmail; t.clientPhone = cPhone; }
+                    if(this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin') { t.paymentStatus = payStatus; t.paymentAmount = payAmount; t.paymentRef = payRef; t.paymentMethod = payMethod; }
+                    if(manualName) { t.clientName = manualName; t.clientEmail = cEmail; t.clientPhone = cPhone; } 
                 } else { 
-                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR'), company: cCompany }); 
-                }
-                this.saveToCloud(); this.closeModal('ticket'); this.router('tickets');
+                    this.data.tickets.unshift({ id: Date.now(), dept, desc, priority, status: "Open", clientName: cName, clientEmail: cEmail, clientPhone: cPhone, date: new Date().toLocaleString('pt-BR'), company: cCompany, paymentStatus: 'Pending', paymentAmount: '', paymentRef: '', paymentMethod: '' }); 
+                } 
+                this.saveToCloud(); this.closeModal('ticket'); this.router('tickets'); 
             },
             updateTicketStatus: function(id, newStatus) { const t = this.data.tickets.find(x => x.id == id); if(t) { t.status = newStatus; this.saveToCloud(); this.router('tickets'); } },
             updateTicketTech: function(id, newTech) { const t = this.data.tickets.find(x => x.id == id); if(t) { t.assignedTech = newTech; this.saveToCloud(); } },
             deleteTicket: function(id) { if(confirm(this.t('remove') + '?')) { this.data.tickets = this.data.tickets.filter(t => t.id !== id); this.saveToCloud(); this.router('tickets'); } },
-            editTicket: function(id) { app.openTicketModal(id); }, 
-            openTicketModal: function(id=null) { 
-                document.getElementById('modal-ticket').classList.remove('hidden'); document.getElementById('ticket-id').value = id||'';
-                const field = document.getElementById('field-client-details');
-                if (this.data.currentUser.role !== 'client') field.classList.remove('hidden'); else field.classList.add('hidden');
-                if(id){ const t = this.data.tickets.find(x=>x.id==id); document.getElementById('ticket-desc').value=t.desc; document.getElementById('ticket-client-manual').value=t.clientName; document.getElementById('ticket-client-phone').value=t.clientPhone || ''; document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail; document.getElementById('ticket-dept').value=t.dept; document.getElementById('ticket-priority').value=t.priority; } 
-                else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; document.getElementById('ticket-client-phone').value = ''; document.getElementById('ticket-client-email').value = ''; }
-            },
-            
-            saveUser: function() {
-                const id = document.getElementById('user-id').value;
-                const uData = {
-                    id: id ? parseInt(id) : Date.now(),
-                    name: document.getElementById('new-user-name').value,
-                    role: document.getElementById('new-user-role').value,
-                    company: document.getElementById('new-user-company').value, 
-                    email: document.getElementById('new-user-email').value,
-                    pass: document.getElementById('new-user-pass').value
-                };
-                
-                if(id) { 
-                    const idx = this.data.users.findIndex(x => x.id == id);
-                    if(this.data.users[idx].notes) uData.notes = this.data.users[idx].notes; 
-                    this.data.users[idx] = uData; 
-                } else { 
-                    this.data.users.push(uData); 
-                }
-                
-                this.saveToCloud(); 
-                this.closeModal('user'); 
-                if(id == this.data.currentUser.id) location.reload(); 
-                else this.router(uData.role==='client'?'clients':'team');
-            },
-            
-            editUser: function(id) { 
-                const u = this.data.users.find(x => x.id == id);
-                document.getElementById('user-id').value = u.id; 
-                document.getElementById('new-user-name').value = u.name; 
-                document.getElementById('new-user-email').value = u.email; 
-                document.getElementById('new-user-pass').value = u.pass; 
-                document.getElementById('new-user-role').value = u.role;
-                document.getElementById('new-user-company').value = u.company || '';
-                
-                const loggedRole = this.data.currentUser.role;
-                const isSuperAdmin = loggedRole === 'super_admin';
-                const isCompanyAdmin = loggedRole === 'admin';
-                const canEdit = isSuperAdmin || isCompanyAdmin;
-                
-                document.getElementById('new-user-name').disabled = !canEdit;
-                document.getElementById('new-user-email').disabled = !canEdit;
-                document.getElementById('new-user-pass').disabled = !canEdit;
-                document.getElementById('new-user-role').disabled = !canEdit;
-                document.getElementById('new-user-company').disabled = !isSuperAdmin;
-                
-                if(isSuperAdmin) {
-                    document.getElementById('opt-super-admin').classList.remove('hidden');
-                } else {
-                    document.getElementById('opt-super-admin').classList.add('hidden');
-                    if(!id) document.getElementById('new-user-company').value = this.data.currentUser.company;
-                }
-
-                if(!canEdit) {
-                    document.getElementById('user-ro-warning').classList.remove('hidden');
-                    document.getElementById('btn-save-profile').classList.add('hidden'); 
-                    document.getElementById('field-role-container').classList.add('hidden');
-                } else {
-                    document.getElementById('user-ro-warning').classList.add('hidden');
-                    document.getElementById('btn-save-profile').classList.remove('hidden');
-                    document.getElementById('field-role-container').classList.remove('hidden');
-                }
-
-                const vaultSection = document.getElementById('client-vault-section');
-                if ((canEdit || this.data.currentUser.role.includes('tech')) && u.role === 'client') {
-                    vaultSection.classList.remove('hidden');
-                    this.renderClientNotes(u.id);
-                } else {
-                    vaultSection.classList.add('hidden');
-                }
-
-                document.getElementById('modal-user').classList.remove('hidden');
-            },
-
-            setNoteType: function(type) {
-                document.getElementById('vault-type').value = type;
-                const input = document.getElementById('vault-input');
-                if(type === 'password') input.placeholder = "Enter password or secure credential...";
-                else if(type === 'device') input.placeholder = "Enter device name and location...";
-                else if(type === 'network') input.placeholder = "Enter Wi-Fi SSID and Password...";
-                else input.placeholder = "Enter note...";
-            },
-            addClientNote: function() {
-                const userId = document.getElementById('user-id').value;
-                const text = document.getElementById('vault-input').value.trim();
-                const type = document.getElementById('vault-type').value;
-                if(!text) return;
-                const userIndex = this.data.users.findIndex(u => u.id == userId);
-                if(userIndex > -1) {
-                    if(!this.data.users[userIndex].notes) this.data.users[userIndex].notes = [];
-                    this.data.users[userIndex].notes.unshift({ id: Date.now(), date: new Date().toLocaleString(), text: text, type: type, author: this.data.currentUser.name });
-                    this.saveToCloud(); document.getElementById('vault-input').value = ''; this.renderClientNotes(userId);
-                }
-            },
-            renderClientNotes: function(userId) {
-                const u = this.data.users.find(x => x.id == userId);
-                const list = document.getElementById('vault-list');
-                list.innerHTML = '';
-                if(!u.notes || u.notes.length === 0) { list.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No history recorded.</p>'; return; }
-                u.notes.forEach(note => {
-                    let icon = '📝'; let bgClass = 'bg-gray-50 border-gray-200'; let textClass = 'text-gray-700';
-                    if(note.type === 'password') { icon = '🔐'; bgClass = 'bg-red-50 border-red-100'; textClass = 'text-red-800 font-mono secure-blur'; }
-                    if(note.type === 'device') { icon = '📱'; bgClass = 'bg-blue-50 border-blue-100'; }
-                    if(note.type === 'network') { icon = '🛜'; bgClass = 'bg-purple-50 border-purple-100'; }
-                    const deleteBtn = (this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin') ? `<button onclick="app.deleteNote(${userId}, ${note.id})" class="text-gray-300 hover:text-red-500"><i class="fas fa-times"></i></button>` : '';
-                    list.innerHTML += `<div class="p-3 rounded-lg border ${bgClass} flex gap-3 items-start"><div class="text-lg">${icon}</div><div class="flex-1"><p class="text-xs text-gray-400 mb-1 flex justify-between"><span>${note.date}</span><span class="font-bold">${note.author || 'Admin'}</span></p><p class="text-sm ${textClass}">${note.text}</p></div>${deleteBtn}</div>`;
-                });
-            },
-            deleteNote: function(userId, noteId) {
-                if(confirm('Delete this entry?')) {
-                    const idx = this.data.users.findIndex(u => u.id == userId);
-                    this.data.users[idx].notes = this.data.users[idx].notes.filter(n => n.id !== noteId);
-                    this.saveToCloud(); this.renderClientNotes(userId);
-                }
-            },
+            editTicket: function(id) { app.openTicketModal(id); const t = this.data.tickets.find(x => x.id == id); if(t && (this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin')) { document.getElementById('ticket-pay-status').value = t.paymentStatus || 'Pending'; document.getElementById('ticket-pay-amount').value = t.paymentAmount || ''; document.getElementById('ticket-pay-ref').value = t.paymentRef || ''; document.getElementById('ticket-pay-method').value = t.paymentMethod || 'Stripe'; } }, 
+            openTicketModal: function(id=null) { document.getElementById('modal-ticket').classList.remove('hidden'); document.getElementById('ticket-id').value = id||''; const field = document.getElementById('field-client-details'); const financeSection = document.getElementById('finance-section'); if (this.data.currentUser.role !== 'client') field.classList.remove('hidden'); else field.classList.add('hidden'); if (this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin') { financeSection.classList.remove('hidden'); } else { financeSection.classList.add('hidden'); } if(id){ const t = this.data.tickets.find(x=>x.id==id); document.getElementById('ticket-desc').value=t.desc; document.getElementById('ticket-client-manual').value=t.clientName; document.getElementById('ticket-client-phone').value=t.clientPhone || ''; document.getElementById('ticket-client-email').value=t.clientEmail === 'manual@entry' ? '' : t.clientEmail; document.getElementById('ticket-dept').value=t.dept; document.getElementById('ticket-priority').value=t.priority; } else { document.getElementById('ticket-desc').value = ''; document.getElementById('ticket-client-manual').value = ''; document.getElementById('ticket-client-phone').value = ''; document.getElementById('ticket-client-email').value = ''; document.getElementById('ticket-pay-status').value = 'Pending'; document.getElementById('ticket-pay-amount').value = ''; document.getElementById('ticket-pay-ref').value = ''; } },
+            saveUser: function() { const id = document.getElementById('user-id').value; const uData = { id: id ? parseInt(id) : Date.now(), name: document.getElementById('new-user-name').value, role: document.getElementById('new-user-role').value, company: document.getElementById('new-user-company').value, email: document.getElementById('new-user-email').value, pass: document.getElementById('new-user-pass').value }; if(id) { const idx = this.data.users.findIndex(x => x.id == id); if(this.data.users[idx].notes) uData.notes = this.data.users[idx].notes; this.data.users[idx] = uData; } else { this.data.users.push(uData); } this.saveToCloud(); this.closeModal('user'); if(id == this.data.currentUser.id) location.reload(); else this.router(uData.role==='client'?'clients':'team'); },
+            editUser: function(id) { const u = this.data.users.find(x => x.id == id); document.getElementById('user-id').value = u.id; document.getElementById('new-user-name').value = u.name; document.getElementById('new-user-email').value = u.email; document.getElementById('new-user-pass').value = u.pass; document.getElementById('new-user-role').value = u.role; document.getElementById('new-user-company').value = u.company || ''; const loggedRole = this.data.currentUser.role; const isSuperAdmin = loggedRole === 'super_admin'; const isCompanyAdmin = loggedRole === 'admin'; const canEdit = isSuperAdmin || isCompanyAdmin; document.getElementById('new-user-name').disabled = !canEdit; document.getElementById('new-user-email').disabled = !canEdit; document.getElementById('new-user-pass').disabled = !canEdit; document.getElementById('new-user-role').disabled = !canEdit; document.getElementById('new-user-company').disabled = !isSuperAdmin; if(isSuperAdmin) { document.getElementById('opt-super-admin').classList.remove('hidden'); } else { document.getElementById('opt-super-admin').classList.add('hidden'); if(!id) document.getElementById('new-user-company').value = this.data.currentUser.company; } if(!canEdit) { document.getElementById('user-ro-warning').classList.remove('hidden'); document.getElementById('btn-save-profile').classList.add('hidden'); document.getElementById('field-role-container').classList.add('hidden'); } else { document.getElementById('user-ro-warning').classList.add('hidden'); document.getElementById('btn-save-profile').classList.remove('hidden'); document.getElementById('field-role-container').classList.remove('hidden'); } const vaultSection = document.getElementById('client-vault-section'); if ((canEdit || this.data.currentUser.role.includes('tech')) && u.role === 'client') { vaultSection.classList.remove('hidden'); this.renderClientNotes(u.id); } else { vaultSection.classList.add('hidden'); } document.getElementById('modal-user').classList.remove('hidden'); },
+            setNoteType: function(type) { document.getElementById('vault-type').value = type; const input = document.getElementById('vault-input'); if(type === 'password') input.placeholder = "Enter password or secure credential..."; else if(type === 'device') input.placeholder = "Enter device name and location..."; else if(type === 'network') input.placeholder = "Enter Wi-Fi SSID and Password..."; else input.placeholder = "Enter note..."; },
+            addClientNote: function() { const userId = document.getElementById('user-id').value; const text = document.getElementById('vault-input').value.trim(); const type = document.getElementById('vault-type').value; if(!text) return; const userIndex = this.data.users.findIndex(u => u.id == userId); if(userIndex > -1) { if(!this.data.users[userIndex].notes) this.data.users[userIndex].notes = []; this.data.users[userIndex].notes.unshift({ id: Date.now(), date: new Date().toLocaleString(), text: text, type: type, author: this.data.currentUser.name }); this.saveToCloud(); document.getElementById('vault-input').value = ''; this.renderClientNotes(userId); } },
+            renderClientNotes: function(userId) { const u = this.data.users.find(x => x.id == userId); const list = document.getElementById('vault-list'); list.innerHTML = ''; if(!u.notes || u.notes.length === 0) { list.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">No history recorded.</p>'; return; } u.notes.forEach(note => { let icon = '📝'; let bgClass = 'bg-gray-50 border-gray-200'; let textClass = 'text-gray-700'; if(note.type === 'password') { icon = '🔐'; bgClass = 'bg-red-50 border-red-100'; textClass = 'text-red-800 font-mono secure-blur'; } if(note.type === 'device') { icon = '📱'; bgClass = 'bg-blue-50 border-blue-100'; } if(note.type === 'network') { icon = '🛜'; bgClass = 'bg-purple-50 border-purple-100'; } const deleteBtn = (this.data.currentUser.role === 'admin' || this.data.currentUser.role === 'super_admin') ? `<button onclick="app.deleteNote(${userId}, ${note.id})" class="text-gray-300 hover:text-red-500"><i class="fas fa-times"></i></button>` : ''; list.innerHTML += `<div class="p-3 rounded-lg border ${bgClass} flex gap-3 items-start"><div class="text-lg">${icon}</div><div class="flex-1"><p class="text-xs text-gray-400 mb-1 flex justify-between"><span>${note.date}</span><span class="font-bold">${note.author || 'Admin'}</span></p><p class="text-sm ${textClass}">${note.text}</p></div>${deleteBtn}</div>`; }); },
+            deleteNote: function(userId, noteId) { if(confirm('Delete this entry?')) { const idx = this.data.users.findIndex(u => u.id == userId); this.data.users[idx].notes = this.data.users[idx].notes.filter(n => n.id !== noteId); this.saveToCloud(); this.renderClientNotes(userId); } },
             deleteUser: function(id) { if(confirm(this.t('remove') + '?')) { this.data.users = this.data.users.filter(u => u.id !== id); this.saveToCloud(); this.router('team'); } },
             closeModal: function(id) { document.getElementById(`modal-${id}`).classList.add('hidden'); },
-            getRoleLabel: function(r) { 
-                if(r === 'super_admin') return 'Super Admin';
-                if(r === 'admin') return 'Company Admin';
-                if(r === 'hvac_tech') return 'HVAC Tech';
-                if(r === 'smart_tech') return 'Smart Tech';
-                return 'Client';
-            },
-            updateBadge: function() { const c = this.filterByCompany(this.data.tickets).filter(t => t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); }
+            getRoleLabel: function(r) { if(r === 'super_admin') return 'Super Admin'; if(r === 'admin') return 'Company Admin'; if(r === 'hvac_tech') return 'HVAC Tech'; if(r === 'smart_tech') return 'Smart Tech'; return 'Client'; },
+            updateBadge: function() { const c = this.filterByCompany(this.data.tickets).filter(t => t.status === 'Open').length; document.getElementById('badge-tickets').innerText = c; document.getElementById('badge-tickets').classList.toggle('hidden', c===0); },
+            generatePDF: function(ticketId) { const ticket = this.data.tickets.find(t => t.id === ticketId); if (!ticket) return; const { jsPDF } = window.jspdf; const doc = new jsPDF(); let logoId = 'img-logo-main'; let companyName = "D2 Group"; let payLink = ""; if (ticket.dept === 'HVAC') { logoId = 'img-logo-hvac'; companyName = "D2 HVAC Solutions"; payLink = this.data.settings.stripeHvac; } else if (ticket.dept === 'SMART') { logoId = 'img-logo-smart'; companyName = "D2 Smart Home"; payLink = this.data.settings.stripeSmart; } const logoImg = document.getElementById(logoId); if (logoImg) { try { doc.addImage(logoImg, 'PNG', 15, 15, 50, 20); } catch (e) { doc.setFontSize(22); doc.text(companyName, 15, 25); } } doc.setFontSize(20); doc.setTextColor(40); doc.text("SERVICE REPORT", 140, 25); doc.setFontSize(10); doc.text(`Ticket ID: #${ticket.id}`, 140, 32); doc.text(`Date: ${ticket.date.split(',')[0]}`, 140, 37); doc.setDrawColor(200); doc.line(15, 45, 195, 45); doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("Client Details:", 15, 55); doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.text(`Name: ${ticket.clientName}`, 15, 62); if(ticket.clientPhone) doc.text(`Phone: ${ticket.clientPhone}`, 15, 67); if(ticket.clientEmail) doc.text(`Email: ${ticket.clientEmail}`, 15, 72); doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("Service Description:", 15, 85); doc.setFont("helvetica", "normal"); doc.setFontSize(10); const splitText = doc.splitTextToSize(ticket.desc, 180); doc.text(splitText, 15, 92); let yPos = 92 + (splitText.length * 5) + 20; doc.setFillColor(245, 245, 245); doc.roundedRect(15, yPos, 180, 40, 3, 3, 'F'); doc.setFontSize(12); doc.setFont("helvetica", "bold"); doc.text("Completion & Payment", 25, yPos + 10); doc.setFontSize(10); doc.setFont("helvetica", "normal"); doc.text("Status: " + ticket.status, 25, yPos + 18); doc.text("Technician: " + (ticket.assignedTech || "N/A"), 25, yPos + 23); if (payLink) { doc.setTextColor(0, 0, 255); doc.textWithLink("CLICK HERE TO PAY ONLINE", 25, yPos + 33, { url: payLink }); } else { doc.setTextColor(150); doc.text("No payment link configured.", 25, yPos + 33); } doc.save(`Service_Report_${ticket.id}.pdf`); }
         };
         app.init();
     </script>
